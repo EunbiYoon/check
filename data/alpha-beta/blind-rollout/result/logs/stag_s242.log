@@ -1,0 +1,81 @@
+[stag_s242] Loading blind model Qwen/Qwen2.5-7B-Instruct (this can take a few minutes)...
+[stag_s242] Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+[stag_s242] Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.05it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.08it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.09it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.13it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.11it/s]
+[stag_s242] Loaded blind model on cuda:0; CUDA available=True
+[stag_s242] CUDA memory allocated after load: 14.19 GiB
+[stag_s242] Expected trajectories: 60
+[stag_s242] starting stag-hunt / always_cooperate
+[stag_s242]   running episode 1/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 1/60 (1.7%) | elapsed 0:14 | ETA 13:51 | 0.07 trajectories/s
+[stag_s242]   running episode 2/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 2/60 (3.3%) | elapsed 0:27 | ETA 13:06 | 0.07 trajectories/s
+[stag_s242]   running episode 3/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 3/60 (5.0%) | elapsed 0:39 | ETA 12:22 | 0.08 trajectories/s
+[stag_s242]   running episode 4/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 4/60 (6.7%) | elapsed 0:51 | ETA 11:54 | 0.08 trajectories/s
+[stag_s242]   running episode 5/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 5/60 (8.3%) | elapsed 1:03 | ETA 11:34 | 0.08 trajectories/s
+[stag_s242]   running episode 6/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 6/60 (10.0%) | elapsed 1:16 | ETA 11:28 | 0.08 trajectories/s
+[stag_s242]   running episode 7/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 7/60 (11.7%) | elapsed 1:30 | ETA 11:19 | 0.08 trajectories/s
+[stag_s242]   running episode 8/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 8/60 (13.3%) | elapsed 1:42 | ETA 11:05 | 0.08 trajectories/s
+[stag_s242]   running episode 9/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 9/60 (15.0%) | elapsed 1:55 | ETA 10:54 | 0.08 trajectories/s
+[stag_s242]   running episode 10/10 (stag-hunt / always_cooperate)
+[stag_s242] progress 10/60 (16.7%) | elapsed 2:08 | ETA 10:39 | 0.08 trajectories/s
+[stag_s242] starting stag-hunt / always_defect
+[stag_s242]   running episode 1/10 (stag-hunt / always_defect)
+[stag_s242] progress 11/60 (18.3%) | elapsed 2:23 | ETA 10:36 | 0.08 trajectories/s
+[stag_s242]   running episode 2/10 (stag-hunt / always_defect)
+[stag_s242] progress 12/60 (20.0%) | elapsed 2:36 | ETA 10:25 | 0.08 trajectories/s
+[stag_s242]   running episode 3/10 (stag-hunt / always_defect)
+[stag_s242] progress 13/60 (21.7%) | elapsed 2:52 | ETA 10:21 | 0.08 trajectories/s
+[stag_s242]   running episode 4/10 (stag-hunt / always_defect)
+[stag_s242] progress 14/60 (23.3%) | elapsed 3:06 | ETA 10:11 | 0.08 trajectories/s
+[stag_s242]   running episode 5/10 (stag-hunt / always_defect)
+[stag_s242] progress 15/60 (25.0%) | elapsed 3:21 | ETA 10:04 | 0.07 trajectories/s
+[stag_s242]   running episode 6/10 (stag-hunt / always_defect)
+[stag_s242] progress 16/60 (26.7%) | elapsed 3:36 | ETA 9:54 | 0.07 trajectories/s
+[stag_s242]   running episode 7/10 (stag-hunt / always_defect)
+[stag_s242] progress 17/60 (28.3%) | elapsed 3:51 | ETA 9:45 | 0.07 trajectories/s
+[stag_s242]   running episode 8/10 (stag-hunt / always_defect)
+[stag_s242] progress 18/60 (30.0%) | elapsed 4:08 | ETA 9:38 | 0.07 trajectories/s
+[stag_s242]   running episode 9/10 (stag-hunt / always_defect)
+[stag_s242] progress 19/60 (31.7%) | elapsed 4:23 | ETA 9:28 | 0.07 trajectories/s
+[stag_s242]   running episode 10/10 (stag-hunt / always_defect)
+[stag_s242] progress 20/60 (33.3%) | elapsed 4:39 | ETA 9:18 | 0.07 trajectories/s
+[stag_s242] starting stag-hunt / tit_for_tat
+[stag_s242]   running episode 1/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 21/60 (35.0%) | elapsed 4:52 | ETA 9:02 | 0.07 trajectories/s
+[stag_s242]   running episode 2/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 22/60 (36.7%) | elapsed 5:05 | ETA 8:47 | 0.07 trajectories/s
+[stag_s242]   running episode 3/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 23/60 (38.3%) | elapsed 5:18 | ETA 8:31 | 0.07 trajectories/s
+[stag_s242]   running episode 4/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 24/60 (40.0%) | elapsed 5:30 | ETA 8:15 | 0.07 trajectories/s
+[stag_s242]   running episode 5/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 25/60 (41.7%) | elapsed 5:42 | ETA 7:59 | 0.07 trajectories/s
+[stag_s242]   running episode 6/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 26/60 (43.3%) | elapsed 5:54 | ETA 7:43 | 0.07 trajectories/s
+[stag_s242]   running episode 7/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 27/60 (45.0%) | elapsed 6:08 | ETA 7:30 | 0.07 trajectories/s
+[stag_s242]   running episode 8/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 28/60 (46.7%) | elapsed 6:21 | ETA 7:15 | 0.07 trajectories/s
+[stag_s242]   running episode 9/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 29/60 (48.3%) | elapsed 6:33 | ETA 7:00 | 0.07 trajectories/s
+[stag_s242]   running episode 10/10 (stag-hunt / tit_for_tat)
+[stag_s242] progress 30/60 (50.0%) | elapsed 6:46 | ETA 6:46 | 0.07 trajectories/s
+[stag_s242] starting stag-hunt / grim_trigger
+[stag_s242]   running episode 1/10 (stag-hunt / grim_trigger)
+[stag_s242] progress 31/60 (51.7%) | elapsed 6:59 | ETA 6:32 | 0.07 trajectories/s
+[stag_s242]   running episode 2/10 (stag-hunt / grim_trigger)
+[stag_s242] progress 32/60 (53.3%) | elapsed 7:12 | ETA 6:18 | 0.07 trajectories/s
+[stag_s242]   running episode 3/10 (stag-hunt / grim_trigger)
+[stag_s242] progress 33/60 (55.0%) | elapsed 7:26 | ETA 6:05 | 0.07 trajectories/s
+[stag_s242]   running episode 4/10 (stag-hunt / grim_trigger)
+[stag_s242] progress 34/60 (56.7%) | elapsed 7:38 | ETA 5:50 | 0.07 trajectories/s
+[stag_s242]   running episode 5/10 (stag-hunt / grim_trigger)
+[stag_s242] progress 35/60 (58.3%) | elapsed 7:50 | ETA 5:36 | 0.07 trajectories/s
+[stag_s242]   running episode 6/10 (stag-hunt / grim_trigger)

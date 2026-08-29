@@ -1,0 +1,25 @@
+# --- PyTorch (must match) ---
+torch==2.6.0
+torchvision==0.21.0
+
+# --- HF training stack (DPO / LoRA) ---
+transformers==4.51.2
+trl==0.15.2
+peft==0.13.2
+accelerate==1.2.1
+datasets==3.1.0
+bitsandbytes==0.45.5
+safetensors>=0.4.5
+huggingface-hub>=0.26.0
+tokenizers>=0.21.0
+sentencepiece>=0.2.0
+
+# --- Project utilities ---
+PyYAML>=6.0.1
+pandas>=2.2.0
+openpyxl>=3.1.5
+tqdm>=4.66.0
+scipy>=1.11.0
+numpy>=1.25.0,<2.1.0
+protobuf>=4.25.0
+tensorboard>=2.14.0

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sal"
+version = "0.1.0"
+description = "SARL LoRA train + eval"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["env*", "eval*", "lora*"]
+
+[project.scripts]
+sal-eval = "eval.run_paper_tables:main"

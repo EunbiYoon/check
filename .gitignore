@@ -1,0 +1,46 @@
+.env
+__pycache__/
+*.py[cod]
+.Python
+.venv/
+venv/
+*.zip
+
+# Unified run outputs (history/ after the rename, runs/ before it)
+/history/*
+!/history/.gitkeep
+!/history/__init__.py
+!/history/paths.py
+
+/runs/*
+!/runs/.gitkeep
+!/runs/__init__.py
+!/runs/paths.py
+
+!runs/.gitkeep
+!runs/__init__.py
+!runs/paths.py
+
+# Legacy run locations (removed)
+lora/runs/
+eval/runs/
+lora_3b/
+eval/latest.json
+lora/latest.json
+eval/archive/
+
+# Old flat adapter dirs under lora/
+lora/all/
+lora/aux/
+lora/core/
+lora/rw/
+lora/merge/
+lora/filter_on/
+lora/filter_off/
+lora/eval_staging/
+lora/checkpoint-*/
+
+.DS_Store
+runs.zip
+.agents/
+.codex/

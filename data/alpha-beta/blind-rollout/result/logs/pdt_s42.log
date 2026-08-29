@@ -1,0 +1,43 @@
+[pdt_s42] Loading blind model Qwen/Qwen2.5-7B-Instruct (this can take a few minutes)...
+[pdt_s42] Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+[pdt_s42] Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:20<01:00, 20.02s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:20<00:17,  8.64s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:30<00:09,  9.21s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:54<00:00, 15.11s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:54<00:00, 13.68s/it]
+[pdt_s42] Loaded blind model on cuda:0; CUDA available=True
+[pdt_s42] CUDA memory allocated after load: 14.19 GiB
+[pdt_s42] Expected trajectories: 60
+[pdt_s42] starting pd-tight / always_cooperate
+[pdt_s42]   running episode 1/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 1/60 (1.7%) | elapsed 0:18 | ETA 17:17 | 0.06 trajectories/s
+[pdt_s42]   running episode 2/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 2/60 (3.3%) | elapsed 0:32 | ETA 15:42 | 0.06 trajectories/s
+[pdt_s42]   running episode 3/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 3/60 (5.0%) | elapsed 0:49 | ETA 15:31 | 0.06 trajectories/s
+[pdt_s42]   running episode 4/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 4/60 (6.7%) | elapsed 1:04 | ETA 14:59 | 0.06 trajectories/s
+[pdt_s42]   running episode 5/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 5/60 (8.3%) | elapsed 1:20 | ETA 14:36 | 0.06 trajectories/s
+[pdt_s42]   running episode 6/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 6/60 (10.0%) | elapsed 1:36 | ETA 14:24 | 0.06 trajectories/s
+[pdt_s42]   running episode 7/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 7/60 (11.7%) | elapsed 1:51 | ETA 14:04 | 0.06 trajectories/s
+[pdt_s42]   running episode 8/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 8/60 (13.3%) | elapsed 2:08 | ETA 13:51 | 0.06 trajectories/s
+[pdt_s42]   running episode 9/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 9/60 (15.0%) | elapsed 2:20 | ETA 13:13 | 0.06 trajectories/s
+[pdt_s42]   running episode 10/10 (pd-tight / always_cooperate)
+[pdt_s42] progress 10/60 (16.7%) | elapsed 2:36 | ETA 13:01 | 0.06 trajectories/s
+[pdt_s42] starting pd-tight / always_defect
+[pdt_s42]   running episode 1/10 (pd-tight / always_defect)
+[pdt_s42] progress 11/60 (18.3%) | elapsed 2:47 | ETA 12:23 | 0.07 trajectories/s
+[pdt_s42]   running episode 2/10 (pd-tight / always_defect)
+[pdt_s42] progress 12/60 (20.0%) | elapsed 3:00 | ETA 12:02 | 0.07 trajectories/s
+[pdt_s42]   running episode 3/10 (pd-tight / always_defect)
+[pdt_s42] progress 13/60 (21.7%) | elapsed 3:17 | ETA 11:51 | 0.07 trajectories/s
+[pdt_s42]   running episode 4/10 (pd-tight / always_defect)
+[pdt_s42] progress 14/60 (23.3%) | elapsed 3:27 | ETA 11:21 | 0.07 trajectories/s
+[pdt_s42]   running episode 5/10 (pd-tight / always_defect)
+[pdt_s42] progress 15/60 (25.0%) | elapsed 3:42 | ETA 11:05 | 0.07 trajectories/s
+[pdt_s42]   running episode 6/10 (pd-tight / always_defect)
+[pdt_s42] progress 16/60 (26.7%) | elapsed 3:55 | ETA 10:47 | 0.07 trajectories/s
+[pdt_s42]   running episode 7/10 (pd-tight / always_defect)
+[pdt_s42] progress 17/60 (28.3%) | elapsed 4:09 | ETA 10:30 | 0.07 trajectories/s
+[pdt_s42]   running episode 8/10 (pd-tight / always_defect)

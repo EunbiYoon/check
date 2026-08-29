@@ -1,0 +1,83 @@
+[pdc_s242] Loading blind model Qwen/Qwen2.5-7B-Instruct (this can take a few minutes)...
+[pdc_s242] Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+[pdc_s242] Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.18it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.31it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.35it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.38it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.35it/s]
+[pdc_s242] Loaded blind model on cuda:0; CUDA available=True
+[pdc_s242] CUDA memory allocated after load: 14.19 GiB
+[pdc_s242] Expected trajectories: 60
+[pdc_s242] starting pd-classic / always_cooperate
+[pdc_s242]   running episode 1/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 1/60 (1.7%) | elapsed 0:15 | ETA 14:25 | 0.07 trajectories/s
+[pdc_s242]   running episode 2/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 2/60 (3.3%) | elapsed 0:30 | ETA 14:19 | 0.07 trajectories/s
+[pdc_s242]   running episode 3/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 3/60 (5.0%) | elapsed 0:47 | ETA 14:50 | 0.06 trajectories/s
+[pdc_s242]   running episode 4/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 4/60 (6.7%) | elapsed 1:02 | ETA 14:24 | 0.06 trajectories/s
+[pdc_s242]   running episode 5/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 5/60 (8.3%) | elapsed 1:16 | ETA 13:54 | 0.07 trajectories/s
+[pdc_s242]   running episode 6/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 6/60 (10.0%) | elapsed 1:28 | ETA 13:08 | 0.07 trajectories/s
+[pdc_s242]   running episode 7/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 7/60 (11.7%) | elapsed 1:43 | ETA 13:00 | 0.07 trajectories/s
+[pdc_s242]   running episode 8/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 8/60 (13.3%) | elapsed 1:57 | ETA 12:42 | 0.07 trajectories/s
+[pdc_s242]   running episode 9/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 9/60 (15.0%) | elapsed 2:11 | ETA 12:25 | 0.07 trajectories/s
+[pdc_s242]   running episode 10/10 (pd-classic / always_cooperate)
+[pdc_s242] progress 10/60 (16.7%) | elapsed 2:25 | ETA 12:06 | 0.07 trajectories/s
+[pdc_s242] starting pd-classic / always_defect
+[pdc_s242]   running episode 1/10 (pd-classic / always_defect)
+[pdc_s242] progress 11/60 (18.3%) | elapsed 2:37 | ETA 11:39 | 0.07 trajectories/s
+[pdc_s242]   running episode 2/10 (pd-classic / always_defect)
+[pdc_s242] progress 12/60 (20.0%) | elapsed 2:50 | ETA 11:21 | 0.07 trajectories/s
+[pdc_s242]   running episode 3/10 (pd-classic / always_defect)
+[pdc_s242] progress 13/60 (21.7%) | elapsed 3:02 | ETA 11:00 | 0.07 trajectories/s
+[pdc_s242]   running episode 4/10 (pd-classic / always_defect)
+[pdc_s242] progress 14/60 (23.3%) | elapsed 3:15 | ETA 10:39 | 0.07 trajectories/s
+[pdc_s242]   running episode 5/10 (pd-classic / always_defect)
+[pdc_s242] progress 15/60 (25.0%) | elapsed 3:30 | ETA 10:30 | 0.07 trajectories/s
+[pdc_s242]   running episode 6/10 (pd-classic / always_defect)
+[pdc_s242] progress 16/60 (26.7%) | elapsed 3:44 | ETA 10:17 | 0.07 trajectories/s
+[pdc_s242]   running episode 7/10 (pd-classic / always_defect)
+[pdc_s242] progress 17/60 (28.3%) | elapsed 3:56 | ETA 9:56 | 0.07 trajectories/s
+[pdc_s242]   running episode 8/10 (pd-classic / always_defect)
+[pdc_s242] progress 18/60 (30.0%) | elapsed 4:08 | ETA 9:39 | 0.07 trajectories/s
+[pdc_s242]   running episode 9/10 (pd-classic / always_defect)
+[pdc_s242] progress 19/60 (31.7%) | elapsed 4:20 | ETA 9:21 | 0.07 trajectories/s
+[pdc_s242]   running episode 10/10 (pd-classic / always_defect)
+[pdc_s242] progress 20/60 (33.3%) | elapsed 4:32 | ETA 9:05 | 0.07 trajectories/s
+[pdc_s242] starting pd-classic / tit_for_tat
+[pdc_s242]   running episode 1/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 21/60 (35.0%) | elapsed 4:46 | ETA 8:52 | 0.07 trajectories/s
+[pdc_s242]   running episode 2/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 22/60 (36.7%) | elapsed 5:01 | ETA 8:41 | 0.07 trajectories/s
+[pdc_s242]   running episode 3/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 23/60 (38.3%) | elapsed 5:17 | ETA 8:30 | 0.07 trajectories/s
+[pdc_s242]   running episode 4/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 24/60 (40.0%) | elapsed 5:31 | ETA 8:17 | 0.07 trajectories/s
+[pdc_s242]   running episode 5/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 25/60 (41.7%) | elapsed 5:47 | ETA 8:06 | 0.07 trajectories/s
+[pdc_s242]   running episode 6/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 26/60 (43.3%) | elapsed 6:01 | ETA 7:51 | 0.07 trajectories/s
+[pdc_s242]   running episode 7/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 27/60 (45.0%) | elapsed 6:15 | ETA 7:39 | 0.07 trajectories/s
+[pdc_s242]   running episode 8/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 28/60 (46.7%) | elapsed 6:29 | ETA 7:24 | 0.07 trajectories/s
+[pdc_s242]   running episode 9/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 29/60 (48.3%) | elapsed 6:40 | ETA 7:07 | 0.07 trajectories/s
+[pdc_s242]   running episode 10/10 (pd-classic / tit_for_tat)
+[pdc_s242] progress 30/60 (50.0%) | elapsed 6:54 | ETA 6:54 | 0.07 trajectories/s
+[pdc_s242] starting pd-classic / grim_trigger
+[pdc_s242]   running episode 1/10 (pd-classic / grim_trigger)
+[pdc_s242] progress 31/60 (51.7%) | elapsed 7:08 | ETA 6:41 | 0.07 trajectories/s
+[pdc_s242]   running episode 2/10 (pd-classic / grim_trigger)
+[pdc_s242] progress 32/60 (53.3%) | elapsed 7:22 | ETA 6:27 | 0.07 trajectories/s
+[pdc_s242]   running episode 3/10 (pd-classic / grim_trigger)
+[pdc_s242] progress 33/60 (55.0%) | elapsed 7:36 | ETA 6:13 | 0.07 trajectories/s
+[pdc_s242]   running episode 4/10 (pd-classic / grim_trigger)
+[pdc_s242] progress 34/60 (56.7%) | elapsed 7:51 | ETA 6:00 | 0.07 trajectories/s
+[pdc_s242]   running episode 5/10 (pd-classic / grim_trigger)
+[pdc_s242] progress 35/60 (58.3%) | elapsed 8:06 | ETA 5:47 | 0.07 trajectories/s
+[pdc_s242]   running episode 6/10 (pd-classic / grim_trigger)
+[pdc_s242] progress 36/60 (60.0%) | elapsed 8:19 | ETA 5:33 | 0.07 trajectories/s
+[pdc_s242]   running episode 7/10 (pd-classic / grim_trigger)
