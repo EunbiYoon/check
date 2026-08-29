@@ -9,6 +9,8 @@ history/
 
 /runs/*
 /logs/*
+**/logs/
+*.log
 !/runs/.gitkeep
 !/runs/__init__.py
 !/runs/paths.py
