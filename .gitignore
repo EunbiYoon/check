@@ -9,6 +9,7 @@ history/
 
 /runs/*
 /logs/*
+docs/
 **/logs/
 *.log
 !/runs/.gitkeep
