@@ -8,6 +8,7 @@ venv/
 history/
 
 /runs/*
+/logs/*
 !/runs/.gitkeep
 !/runs/__init__.py
 !/runs/paths.py
