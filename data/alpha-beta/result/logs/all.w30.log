@@ -1,15 +1,0 @@
-[all][w30 GPU 0] [all.w30.jsonl] 52 improving flips -> 52 unique none contexts; paraphrasing 52
-[all][w30 GPU 0] WARNING: BNB_CUDA_VERSION=126 environment variable detected; loading libbitsandbytes_cuda126.so.
-[all][w30 GPU 0] This can be used to load a bitsandbytes version that is different from the PyTorch CUDA version.
-[all][w30 GPU 0] If this was unintended set the BNB_CUDA_VERSION variable to an empty string: export BNB_CUDA_VERSION=
-[all][w30 GPU 0] If you use the manual override make sure the right libcudart.so is in your LD_LIBRARY_PATH
-[all][w30 GPU 0] For example by adding the following to your .bashrc: export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_cuda_dir/lib64
-[all][w30 GPU 0] 
-[all][w30 GPU 0] Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
-[all][w30 GPU 0] Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:02<00:06,  2.16s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:04<00:04,  2.44s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:07<00:02,  2.54s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:09<00:00,  2.27s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:09<00:00,  2.32s/it]
-[all][w30 GPU 0] /scratch/workspace/eunbiyoon_umass_edu-paper/eunbiyoon_umass_edu/.conda/envs/sal/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:653: UserWarning: `do_sample` is set to `False`. However, `top_k` is set to `20` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_k`.
-[all][w30 GPU 0]   warnings.warn(
-[all][w30 GPU 0] [all.w30.jsonl] 25/52 contexts — 25 pairs, 0 dropped, 45s elapsed
-[all][w30 GPU 0] [all.w30.jsonl] 50/52 contexts — 50 pairs, 0 dropped, 102s elapsed
-[all][w30 GPU 0] [all.w30.jsonl] 52/52 contexts — 52 pairs, 0 dropped, 109s elapsed
-[all][w30 GPU 0] wrote 52 verified round-level pairs to data/alpha-beta/result/shards/all.w30.jsonl

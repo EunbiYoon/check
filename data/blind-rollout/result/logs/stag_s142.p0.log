@@ -1,55 +1,0 @@
-[stag_s142.p0] Loading blind model Qwen/Qwen2.5-7B-Instruct (this can take a few minutes)...
-[stag_s142.p0] Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
-[stag_s142.p0] Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:41<02:05, 41.81s/it]Loading checkpoint shards:  50%|█████     | 2/4 [01:14<01:13, 36.54s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [01:46<00:34, 34.51s/it]Loading checkpoint shards: 100%|██████████| 4/4 [02:16<00:00, 32.52s/it]Loading checkpoint shards: 100%|██████████| 4/4 [02:16<00:00, 34.05s/it]
-[stag_s142.p0] Loaded blind model on cuda:0; CUDA available=True
-[stag_s142.p0] CUDA memory allocated after load: 14.19 GiB
-[stag_s142.p0] Blind reasoning format: slots
-[stag_s142.p0] shard 0/3
-[stag_s142.p0] Expected trajectories: 20
-[stag_s142.p0] starting stag-hunt / always_cooperate
-[stag_s142.p0]   running episode 1/10 (stag-hunt / always_cooperate)
-[stag_s142.p0] progress 1/20 (5.0%) | elapsed 0:27 | ETA 8:42 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 4/10 (stag-hunt / always_cooperate)
-[stag_s142.p0] progress 2/20 (10.0%) | elapsed 0:57 | ETA 8:30 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 7/10 (stag-hunt / always_cooperate)
-[stag_s142.p0] progress 3/20 (15.0%) | elapsed 1:22 | ETA 7:46 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 10/10 (stag-hunt / always_cooperate)
-[stag_s142.p0] progress 4/20 (20.0%) | elapsed 1:50 | ETA 7:19 | 0.04 trajectories/s
-[stag_s142.p0] starting stag-hunt / always_defect
-[stag_s142.p0]   running episode 3/10 (stag-hunt / always_defect)
-[stag_s142.p0] progress 5/20 (25.0%) | elapsed 2:17 | ETA 6:51 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 6/10 (stag-hunt / always_defect)
-[stag_s142.p0] progress 6/20 (30.0%) | elapsed 2:42 | ETA 6:19 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 9/10 (stag-hunt / always_defect)
-[stag_s142.p0] progress 7/20 (35.0%) | elapsed 3:09 | ETA 5:50 | 0.04 trajectories/s
-[stag_s142.p0] starting stag-hunt / tit_for_tat
-[stag_s142.p0]   running episode 2/10 (stag-hunt / tit_for_tat)
-[stag_s142.p0] progress 8/20 (40.0%) | elapsed 3:37 | ETA 5:25 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 5/10 (stag-hunt / tit_for_tat)
-[stag_s142.p0] progress 9/20 (45.0%) | elapsed 4:05 | ETA 4:59 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 8/10 (stag-hunt / tit_for_tat)
-[stag_s142.p0] progress 10/20 (50.0%) | elapsed 4:32 | ETA 4:32 | 0.04 trajectories/s
-[stag_s142.p0] starting stag-hunt / grim_trigger
-[stag_s142.p0]   running episode 1/10 (stag-hunt / grim_trigger)
-[stag_s142.p0] progress 11/20 (55.0%) | elapsed 5:01 | ETA 4:06 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 4/10 (stag-hunt / grim_trigger)
-[stag_s142.p0] progress 12/20 (60.0%) | elapsed 5:30 | ETA 3:40 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 7/10 (stag-hunt / grim_trigger)
-[stag_s142.p0] progress 13/20 (65.0%) | elapsed 5:58 | ETA 3:13 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 10/10 (stag-hunt / grim_trigger)
-[stag_s142.p0] progress 14/20 (70.0%) | elapsed 6:26 | ETA 2:45 | 0.04 trajectories/s
-[stag_s142.p0] starting stag-hunt / pavlov
-[stag_s142.p0]   running episode 3/10 (stag-hunt / pavlov)
-[stag_s142.p0] progress 15/20 (75.0%) | elapsed 6:54 | ETA 2:18 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 6/10 (stag-hunt / pavlov)
-[stag_s142.p0] progress 16/20 (80.0%) | elapsed 7:21 | ETA 1:50 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 9/10 (stag-hunt / pavlov)
-[stag_s142.p0] progress 17/20 (85.0%) | elapsed 7:49 | ETA 1:23 | 0.04 trajectories/s
-[stag_s142.p0] starting stag-hunt / tit_for_two_tats
-[stag_s142.p0]   running episode 2/10 (stag-hunt / tit_for_two_tats)
-[stag_s142.p0] progress 18/20 (90.0%) | elapsed 8:16 | ETA 0:55 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 5/10 (stag-hunt / tit_for_two_tats)
-[stag_s142.p0] progress 19/20 (95.0%) | elapsed 8:43 | ETA 0:28 | 0.04 trajectories/s
-[stag_s142.p0]   running episode 8/10 (stag-hunt / tit_for_two_tats)
-[stag_s142.p0] progress 20/20 (100.0%) | elapsed 9:08 | ETA 0:00 | 0.04 trajectories/s
-[stag_s142.p0] wrote 20 blind trajectories to data/blind-rollout/result/stag_s142.p0.jsonl

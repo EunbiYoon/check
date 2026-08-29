@@ -1,14 +1,0 @@
-[core][w30 GPU 0] [core.w30.jsonl] 36 improving flips -> 36 unique none contexts; paraphrasing 36
-[core][w30 GPU 0] WARNING: BNB_CUDA_VERSION=126 environment variable detected; loading libbitsandbytes_cuda126.so.
-[core][w30 GPU 0] This can be used to load a bitsandbytes version that is different from the PyTorch CUDA version.
-[core][w30 GPU 0] If this was unintended set the BNB_CUDA_VERSION variable to an empty string: export BNB_CUDA_VERSION=
-[core][w30 GPU 0] If you use the manual override make sure the right libcudart.so is in your LD_LIBRARY_PATH
-[core][w30 GPU 0] For example by adding the following to your .bashrc: export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_cuda_dir/lib64
-[core][w30 GPU 0] 
-[core][w30 GPU 0] Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
-[core][w30 GPU 0] Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:02<00:06,  2.22s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:04<00:04,  2.49s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:07<00:02,  2.59s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:09<00:00,  2.30s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:09<00:00,  2.37s/it]
-[core][w30 GPU 0] /scratch/workspace/eunbiyoon_umass_edu-paper/eunbiyoon_umass_edu/.conda/envs/sal/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:653: UserWarning: `do_sample` is set to `False`. However, `top_k` is set to `20` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_k`.
-[core][w30 GPU 0]   warnings.warn(
-[core][w30 GPU 0] [core.w30.jsonl] 25/36 contexts — 25 pairs, 0 dropped, 59s elapsed
-[core][w30 GPU 0] [core.w30.jsonl] 36/36 contexts — 36 pairs, 0 dropped, 92s elapsed
-[core][w30 GPU 0] wrote 36 verified round-level pairs to data/alpha-beta/result/shards/core.w30.jsonl
