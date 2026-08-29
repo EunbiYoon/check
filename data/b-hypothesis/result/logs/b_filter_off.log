@@ -1,0 +1,2 @@
+[filter_off] 400 pairs (S1-outcome=282, S2-ne=256, S3-consensus=370, S4-l2-l0=256); 272/320 trajectories coupled
+[filter_off] wrote 400 filter_off pairs to data/b-hypothesis/result/b_filter_off.jsonl

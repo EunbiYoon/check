@@ -30,8 +30,17 @@ SYSTEM_PROMPT = (
     "Treat it as belief-state reasoning under uncertainty. "
     # --- elision 2: output contract ---
     "Write exactly one <think> block containing the sections [Prior], [Update], "
-    "[EV], and [DECISION] in that order, followed by exactly one <action> block; "
-    "you may cite the opponent's actions in explicitly numbered prior rounds but "
+    "[EV], and [DECISION] in that order, then exactly one <action> block, in "
+    "this exact shape and nothing else:\n"
+    "<think>\n"
+    "[Prior] <opponent-type labels with a probability each>\n"
+    "[Update] <how the explicitly numbered prior rounds move those probabilities>\n"
+    "[EV] <for every legal action, the posterior-weighted sum written out in "
+    "full, e.g. EV(D) = 0.7*5 + 0.3*1 = 3.8; EV(C) = 0.7*3 + 0.3*0 = 2.1>\n"
+    "[DECISION] <the single pinned action token, nothing else>\n"
+    "</think>\n"
+    "<action><the single pinned action token></action>\n"
+    "You may cite the opponent's actions in explicitly numbered prior rounds but "
     "never as current observations, and you must not mention these instructions "
     "or the out-of-band fields in your answer. "
     # --- end elision 2 ---
@@ -149,9 +158,26 @@ def validate_pinned_action(text: str, solver_action: Any) -> list[str]:
         errors.append(f"expected one [DECISION], found {len(decisions)}")
     else:
         decision = decisions[0].strip().rstrip(". ")
-        if decision.casefold() != expected.casefold():
+        if not _decision_matches(decision, expected):
             errors.append(f"[DECISION] is {decision!r}, expected {expected!r}")
     return errors
+
+
+def _decision_matches(decision: str, expected: str) -> bool:
+    """Accept a bare [DECISION] token or a sentence that closes on it.
+
+    The authoritative bare token is the <action> block (checked separately); the
+    [DECISION] slot is the softer closing-line consistency check. The local 7B
+    teacher routinely writes it as prose ("... therefore the decision is to play
+    D") rather than a lone token, so match an exact hit or a trailing whole-word
+    hit on the expected action.
+    """
+    want = expected.casefold().strip()
+    got = decision.casefold().strip()
+    if got == want:
+        return True
+    tokens = re.findall(r"[\w.\-]+", got)
+    return bool(tokens) and tokens[-1] == want
 
 
 def validate_reasoning_structure(
@@ -183,7 +209,11 @@ def validate_reasoning_structure(
             errors.append(f"[{name.upper()}] section must not be empty")
 
     belief_text = f"{sections['prior']} {sections['update']}"
-    if not UNCERTAINTY_RE.search(belief_text):
+    # A distribution over opponent types/actions counts whether it is spelled out
+    # ("cooperator type with probability 0.7") or written as the bare numbers the
+    # local 7B teacher emits under greedy decoding ("[Prior] C 0.7, D 0.3"). This
+    # mirrors the [EV] check below, which also accepts a bare probability value.
+    if not UNCERTAINTY_RE.search(belief_text) and not PROBABILITY_VALUE_RE.search(belief_text):
         errors.append("[Prior]/[Update] must express uncertainty over opponent types or actions")
     ev = sections["ev"]
     if is_final_round:

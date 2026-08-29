@@ -1,0 +1,15 @@
+[core][w19 GPU 1] [core.w19.jsonl] 54 improving flips -> 54 unique none contexts; paraphrasing 54
+[core][w19 GPU 1] WARNING: BNB_CUDA_VERSION=126 environment variable detected; loading libbitsandbytes_cuda126.so.
+[core][w19 GPU 1] This can be used to load a bitsandbytes version that is different from the PyTorch CUDA version.
+[core][w19 GPU 1] If this was unintended set the BNB_CUDA_VERSION variable to an empty string: export BNB_CUDA_VERSION=
+[core][w19 GPU 1] If you use the manual override make sure the right libcudart.so is in your LD_LIBRARY_PATH
+[core][w19 GPU 1] For example by adding the following to your .bashrc: export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_cuda_dir/lib64
+[core][w19 GPU 1] 
+[core][w19 GPU 1] Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+[core][w19 GPU 1] Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:36<01:49, 36.62s/it]Loading checkpoint shards:  50%|█████     | 2/4 [01:18<01:19, 39.67s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [01:45<00:33, 33.81s/it]Loading checkpoint shards: 100%|██████████| 4/4 [02:03<00:00, 27.65s/it]Loading checkpoint shards: 100%|██████████| 4/4 [02:03<00:00, 30.87s/it]
+[core][w19 GPU 1] /scratch/workspace/eunbiyoon_umass_edu-paper/eunbiyoon_umass_edu/.conda/envs/sal/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:653: UserWarning: `do_sample` is set to `False`. However, `top_k` is set to `20` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_k`.
+[core][w19 GPU 1]   warnings.warn(
+[core][w19 GPU 1] [core.w19.jsonl] 25/54 contexts — 25 pairs, 0 dropped, 63s elapsed
+[core][w19 GPU 1] [core.w19.jsonl] 50/54 contexts — 50 pairs, 0 dropped, 123s elapsed
+[core][w19 GPU 1] [core.w19.jsonl] 54/54 contexts — 54 pairs, 0 dropped, 135s elapsed
+[core][w19 GPU 1] wrote 54 verified round-level pairs to data/alpha-beta/result/shards/core.w19.jsonl

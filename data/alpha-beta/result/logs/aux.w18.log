@@ -1,0 +1,3 @@
+[aux][w18 GPU 0] [aux.w18.jsonl] 1 improving flips -> 1 unique none contexts; paraphrasing 1
+[aux][w18 GPU 0] [aux.w18.jsonl] 1/1 contexts — 1 pairs, 0 dropped, 0s elapsed
+[aux][w18 GPU 0] wrote 1 verified round-level pairs to data/alpha-beta/result/shards/aux.w18.jsonl

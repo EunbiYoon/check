@@ -1,0 +1,260 @@
+[os_ipdneg_s42.p0] Loading blind model Qwen/Qwen2.5-7B-Instruct (this can take a few minutes)...
+[os_ipdneg_s42.p0] Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+[os_ipdneg_s42.p0] Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.05it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.23it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.30it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.38it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.31it/s]
+[os_ipdneg_s42.p0] Loaded blind model on cuda:0; CUDA available=True
+[os_ipdneg_s42.p0] CUDA memory allocated after load: 14.19 GiB
+[os_ipdneg_s42.p0] Blind reasoning format: slots
+[os_ipdneg_s42.p0] Expected trajectories: 120
+[os_ipdneg_s42.p0] starting ipd-stage / always_cooperate
+[os_ipdneg_s42.p0]   running episode 1/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 1/120 (0.8%) | elapsed 0:03 | ETA 6:41 | 0.30 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 2/120 (1.7%) | elapsed 0:06 | ETA 5:47 | 0.34 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 3/120 (2.5%) | elapsed 0:08 | ETA 5:21 | 0.36 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 4/120 (3.3%) | elapsed 0:10 | ETA 5:04 | 0.38 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 5/120 (4.2%) | elapsed 0:13 | ETA 5:02 | 0.38 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 6/120 (5.0%) | elapsed 0:16 | ETA 4:57 | 0.38 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 7/120 (5.8%) | elapsed 0:18 | ETA 4:53 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 8/120 (6.7%) | elapsed 0:21 | ETA 4:54 | 0.38 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 9/120 (7.5%) | elapsed 0:24 | ETA 4:50 | 0.38 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (ipd-stage / always_cooperate)
+[os_ipdneg_s42.p0] progress 10/120 (8.3%) | elapsed 0:26 | ETA 4:46 | 0.38 trajectories/s
+[os_ipdneg_s42.p0] starting ipd-stage / always_defect
+[os_ipdneg_s42.p0]   running episode 1/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 11/120 (9.2%) | elapsed 0:28 | ETA 4:41 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 12/120 (10.0%) | elapsed 0:31 | ETA 4:38 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 13/120 (10.8%) | elapsed 0:34 | ETA 4:39 | 0.38 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 14/120 (11.7%) | elapsed 0:37 | ETA 4:36 | 0.38 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 15/120 (12.5%) | elapsed 0:39 | ETA 4:30 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 16/120 (13.3%) | elapsed 0:41 | ETA 4:25 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 17/120 (14.2%) | elapsed 0:43 | ETA 4:22 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 18/120 (15.0%) | elapsed 0:46 | ETA 4:19 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 19/120 (15.8%) | elapsed 0:48 | ETA 4:14 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (ipd-stage / always_defect)
+[os_ipdneg_s42.p0] progress 20/120 (16.7%) | elapsed 0:51 | ETA 4:13 | 0.40 trajectories/s
+[os_ipdneg_s42.p0] starting ipd-stage / tit_for_tat
+[os_ipdneg_s42.p0]   running episode 1/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 21/120 (17.5%) | elapsed 0:53 | ETA 4:08 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 22/120 (18.3%) | elapsed 0:55 | ETA 4:05 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 23/120 (19.2%) | elapsed 0:57 | ETA 4:02 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 24/120 (20.0%) | elapsed 1:00 | ETA 4:00 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 25/120 (20.8%) | elapsed 1:02 | ETA 3:57 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 26/120 (21.7%) | elapsed 1:05 | ETA 3:53 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 27/120 (22.5%) | elapsed 1:07 | ETA 3:52 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 28/120 (23.3%) | elapsed 1:10 | ETA 3:51 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 29/120 (24.2%) | elapsed 1:13 | ETA 3:48 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (ipd-stage / tit_for_tat)
+[os_ipdneg_s42.p0] progress 30/120 (25.0%) | elapsed 1:16 | ETA 3:48 | 0.40 trajectories/s
+[os_ipdneg_s42.p0] starting ipd-stage / grim_trigger
+[os_ipdneg_s42.p0]   running episode 1/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 31/120 (25.8%) | elapsed 1:18 | ETA 3:45 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 32/120 (26.7%) | elapsed 1:21 | ETA 3:43 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 33/120 (27.5%) | elapsed 1:24 | ETA 3:41 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 34/120 (28.3%) | elapsed 1:26 | ETA 3:38 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 35/120 (29.2%) | elapsed 1:29 | ETA 3:35 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 36/120 (30.0%) | elapsed 1:31 | ETA 3:32 | 0.40 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 37/120 (30.8%) | elapsed 1:35 | ETA 3:33 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 38/120 (31.7%) | elapsed 1:38 | ETA 3:32 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 39/120 (32.5%) | elapsed 1:41 | ETA 3:29 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (ipd-stage / grim_trigger)
+[os_ipdneg_s42.p0] progress 40/120 (33.3%) | elapsed 1:43 | ETA 3:27 | 0.39 trajectories/s
+[os_ipdneg_s42.p0] starting ipd-stage / pavlov
+[os_ipdneg_s42.p0]   running episode 1/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 41/120 (34.2%) | elapsed 1:46 | ETA 3:24 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 42/120 (35.0%) | elapsed 1:48 | ETA 3:21 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 43/120 (35.8%) | elapsed 1:51 | ETA 3:18 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 44/120 (36.7%) | elapsed 1:53 | ETA 3:15 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 45/120 (37.5%) | elapsed 1:55 | ETA 3:12 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 46/120 (38.3%) | elapsed 1:57 | ETA 3:08 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 47/120 (39.2%) | elapsed 2:00 | ETA 3:06 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 48/120 (40.0%) | elapsed 2:03 | ETA 3:05 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 49/120 (40.8%) | elapsed 2:05 | ETA 3:01 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (ipd-stage / pavlov)
+[os_ipdneg_s42.p0] progress 50/120 (41.7%) | elapsed 2:08 | ETA 2:59 | 0.39 trajectories/s
+[os_ipdneg_s42.p0] starting ipd-stage / tit_for_two_tats
+[os_ipdneg_s42.p0]   running episode 1/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 51/120 (42.5%) | elapsed 2:10 | ETA 2:57 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 52/120 (43.3%) | elapsed 2:13 | ETA 2:54 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 53/120 (44.2%) | elapsed 2:16 | ETA 2:51 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 54/120 (45.0%) | elapsed 2:18 | ETA 2:49 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 55/120 (45.8%) | elapsed 2:20 | ETA 2:46 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 56/120 (46.7%) | elapsed 2:23 | ETA 2:44 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 57/120 (47.5%) | elapsed 2:26 | ETA 2:41 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 58/120 (48.3%) | elapsed 2:29 | ETA 2:39 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 59/120 (49.2%) | elapsed 2:31 | ETA 2:36 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (ipd-stage / tit_for_two_tats)
+[os_ipdneg_s42.p0] progress 60/120 (50.0%) | elapsed 2:34 | ETA 2:34 | 0.39 trajectories/s
+[os_ipdneg_s42.p0] starting ipd-stage / random
+[os_ipdneg_s42.p0]   running episode 1/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 61/120 (50.8%) | elapsed 2:36 | ETA 2:31 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 62/120 (51.7%) | elapsed 2:40 | ETA 2:29 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 63/120 (52.5%) | elapsed 2:42 | ETA 2:27 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 64/120 (53.3%) | elapsed 2:45 | ETA 2:24 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 65/120 (54.2%) | elapsed 2:47 | ETA 2:21 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 66/120 (55.0%) | elapsed 2:50 | ETA 2:19 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 67/120 (55.8%) | elapsed 2:52 | ETA 2:16 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 68/120 (56.7%) | elapsed 2:55 | ETA 2:14 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 69/120 (57.5%) | elapsed 2:57 | ETA 2:11 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (ipd-stage / random)
+[os_ipdneg_s42.p0] progress 70/120 (58.3%) | elapsed 2:59 | ETA 2:08 | 0.39 trajectories/s
+[os_ipdneg_s42.p0] starting ipd-stage / epsilon_greedy
+[os_ipdneg_s42.p0]   running episode 1/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 71/120 (59.2%) | elapsed 3:02 | ETA 2:06 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 72/120 (60.0%) | elapsed 3:05 | ETA 2:03 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 73/120 (60.8%) | elapsed 3:07 | ETA 2:00 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 74/120 (61.7%) | elapsed 3:09 | ETA 1:58 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 75/120 (62.5%) | elapsed 3:13 | ETA 1:56 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 76/120 (63.3%) | elapsed 3:16 | ETA 1:53 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 77/120 (64.2%) | elapsed 3:18 | ETA 1:50 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 78/120 (65.0%) | elapsed 3:20 | ETA 1:48 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 79/120 (65.8%) | elapsed 3:23 | ETA 1:45 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (ipd-stage / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 80/120 (66.7%) | elapsed 3:25 | ETA 1:43 | 0.39 trajectories/s
+[os_ipdneg_s42.p0] starting negotiation / always_cooperate
+[os_ipdneg_s42.p0]   running episode 1/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 81/120 (67.5%) | elapsed 3:27 | ETA 1:40 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 82/120 (68.3%) | elapsed 3:31 | ETA 1:38 | 0.39 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 83/120 (69.2%) | elapsed 3:36 | ETA 1:36 | 0.38 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 84/120 (70.0%) | elapsed 3:39 | ETA 1:34 | 0.38 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 85/120 (70.8%) | elapsed 3:48 | ETA 1:34 | 0.37 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 86/120 (71.7%) | elapsed 3:51 | ETA 1:31 | 0.37 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 87/120 (72.5%) | elapsed 3:59 | ETA 1:31 | 0.36 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 88/120 (73.3%) | elapsed 4:08 | ETA 1:30 | 0.35 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 89/120 (74.2%) | elapsed 4:11 | ETA 1:28 | 0.35 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (negotiation / always_cooperate)
+[os_ipdneg_s42.p0] progress 90/120 (75.0%) | elapsed 4:20 | ETA 1:27 | 0.35 trajectories/s
+[os_ipdneg_s42.p0] starting negotiation / always_defect
+[os_ipdneg_s42.p0]   running episode 1/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 91/120 (75.8%) | elapsed 4:26 | ETA 1:25 | 0.34 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 92/120 (76.7%) | elapsed 4:32 | ETA 1:23 | 0.34 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 93/120 (77.5%) | elapsed 4:37 | ETA 1:20 | 0.34 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 94/120 (78.3%) | elapsed 4:44 | ETA 1:18 | 0.33 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 95/120 (79.2%) | elapsed 4:49 | ETA 1:16 | 0.33 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 96/120 (80.0%) | elapsed 4:55 | ETA 1:14 | 0.33 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 97/120 (80.8%) | elapsed 5:00 | ETA 1:11 | 0.32 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 98/120 (81.7%) | elapsed 5:06 | ETA 1:09 | 0.32 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 99/120 (82.5%) | elapsed 5:15 | ETA 1:07 | 0.31 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (negotiation / always_defect)
+[os_ipdneg_s42.p0] progress 100/120 (83.3%) | elapsed 5:21 | ETA 1:04 | 0.31 trajectories/s
+[os_ipdneg_s42.p0] starting negotiation / random
+[os_ipdneg_s42.p0]   running episode 1/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 101/120 (84.2%) | elapsed 5:24 | ETA 1:01 | 0.31 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 102/120 (85.0%) | elapsed 5:29 | ETA 0:58 | 0.31 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 103/120 (85.8%) | elapsed 5:38 | ETA 0:56 | 0.30 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 104/120 (86.7%) | elapsed 5:43 | ETA 0:53 | 0.30 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 105/120 (87.5%) | elapsed 5:47 | ETA 0:50 | 0.30 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 106/120 (88.3%) | elapsed 5:53 | ETA 0:47 | 0.30 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 107/120 (89.2%) | elapsed 6:02 | ETA 0:44 | 0.30 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 108/120 (90.0%) | elapsed 6:10 | ETA 0:41 | 0.29 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 109/120 (90.8%) | elapsed 6:14 | ETA 0:38 | 0.29 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (negotiation / random)
+[os_ipdneg_s42.p0] progress 110/120 (91.7%) | elapsed 6:17 | ETA 0:34 | 0.29 trajectories/s
+[os_ipdneg_s42.p0] starting negotiation / epsilon_greedy
+[os_ipdneg_s42.p0]   running episode 1/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 111/120 (92.5%) | elapsed 6:23 | ETA 0:31 | 0.29 trajectories/s
+[os_ipdneg_s42.p0]   running episode 2/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 112/120 (93.3%) | elapsed 6:25 | ETA 0:28 | 0.29 trajectories/s
+[os_ipdneg_s42.p0]   running episode 3/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 113/120 (94.2%) | elapsed 6:34 | ETA 0:24 | 0.29 trajectories/s
+[os_ipdneg_s42.p0]   running episode 4/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 114/120 (95.0%) | elapsed 6:39 | ETA 0:21 | 0.29 trajectories/s
+[os_ipdneg_s42.p0]   running episode 5/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 115/120 (95.8%) | elapsed 6:47 | ETA 0:18 | 0.28 trajectories/s
+[os_ipdneg_s42.p0]   running episode 6/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 116/120 (96.7%) | elapsed 6:51 | ETA 0:14 | 0.28 trajectories/s
+[os_ipdneg_s42.p0]   running episode 7/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 117/120 (97.5%) | elapsed 6:54 | ETA 0:11 | 0.28 trajectories/s
+[os_ipdneg_s42.p0]   running episode 8/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 118/120 (98.3%) | elapsed 6:59 | ETA 0:07 | 0.28 trajectories/s
+[os_ipdneg_s42.p0]   running episode 9/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 119/120 (99.2%) | elapsed 7:07 | ETA 0:04 | 0.28 trajectories/s
+[os_ipdneg_s42.p0]   running episode 10/10 (negotiation / epsilon_greedy)
+[os_ipdneg_s42.p0] progress 120/120 (100.0%) | elapsed 7:12 | ETA 0:00 | 0.28 trajectories/s
+[os_ipdneg_s42.p0] wrote 120 blind trajectories to data/blind-rollout/result/os_ipdneg_s42.p0.jsonl

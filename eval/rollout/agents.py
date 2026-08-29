@@ -51,7 +51,7 @@ class LoRALLMAgent:
     def __init__(
         self, model, tokenizer, max_new_tokens: int = 192, *,
         strict_output: bool = False, do_sample: bool = False,
-        temperature: float = 0.7,
+        temperature: float = 0.7, reasoning_format: str = "concise",
     ) -> None:
         self.model = model
         self.tokenizer = tokenizer
@@ -59,9 +59,12 @@ class LoRALLMAgent:
         self.strict_output = strict_output
         self.do_sample = do_sample
         self.temperature = temperature
+        if reasoning_format not in _REASONING_FORMATS:
+            raise ValueError(f"reasoning_format must be one of {sorted(_REASONING_FORMATS)}")
+        self.reasoning_format = reasoning_format
 
     def _generate(self, obs: dict[str, Any]) -> str:
-        text = _format_llm_prompt(self.tokenizer, obs["prompt"])
+        text = _format_llm_prompt(self.tokenizer, obs["prompt"], self.reasoning_format)
         inputs = self.tokenizer(text, return_tensors="pt").to(self.model.device)
         pad_id = self.tokenizer.pad_token_id or self.tokenizer.eos_token_id
         gen_cfg = GenerationConfig(
@@ -163,15 +166,39 @@ class OllamaAgent:
         return reasoning, action
 
 
-def _format_llm_prompt(tokenizer, prompt: str) -> str:
+_REASONING_FORMATS = ("concise", "slots")
+
+_CONCISE_CONTRACT = (
+    "\n\nThe opponent's current-round action is not observable. Reason only from "
+    "the game description and completed-round history shown above. "
+    "Keep the reasoning concise: at most 80 words. "
+    "Respond exactly as <think>your non-empty reasoning</think>"
+    "<action>one legal action</action>."
+)
+
+# Slot form elicits the [Prior][Update][EV][Decision] structure the coupling
+# metric parses (eval/metric/coupling.py). A+beta ignores the blind reasoning
+# format (it is the rejected side; the chosen side is re-written by the teacher);
+# Hypothesis B's coupling filter needs the [EV] slot to exist.
+_SLOTS_CONTRACT = (
+    "\n\nThe opponent's current-round action is not observable. Reason only from "
+    "the game description and completed-round history above — never state the "
+    "opponent's move this round as observed.\n"
+    "Write one <think> block with exactly these four sections, in order:\n"
+    "[Prior] your belief about the opponent's action this round, as rough probabilities.\n"
+    "[Update] how the completed-round history (if any) shifts that belief.\n"
+    "[EV] for EACH legal action, the probability-weighted expected value as "
+    "arithmetic, e.g. EV(C) = 0.7*3 + 0.3*0 = 2.1\n"
+    "[Decision] the legal action with the highest EV.\n"
+    "Keep each section to one short sentence. Then one <action> block with that action.\n"
+    "Respond exactly as <think>[Prior] ... [Update] ... [EV] ... [Decision] ...</think>"
+    "<action>one legal action</action>."
+)
+
+
+def _format_llm_prompt(tokenizer, prompt: str, reasoning_format: str = "concise") -> str:
     """Use chat template when present (Instruct); else raw prompt (pretrained base)."""
-    output_contract = (
-        "\n\nThe opponent's current-round action is not observable. Reason only from "
-        "the game description and completed-round history shown above. "
-        "Keep the reasoning concise: at most 80 words. "
-        "Respond exactly as <think>your non-empty reasoning</think>"
-        "<action>one legal action</action>."
-    )
+    output_contract = _SLOTS_CONTRACT if reasoning_format == "slots" else _CONCISE_CONTRACT
     messages = [{"role": "user", "content": prompt + output_contract}]
     if getattr(tokenizer, "chat_template", None):
         return tokenizer.apply_chat_template(

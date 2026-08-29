@@ -115,6 +115,35 @@ class TrainingPairPipelineTests(unittest.TestCase):
         }
         self.assertEqual(build_pairs(row), [])
 
+    def test_malformed_teacher_round_raises_by_default_but_skips_on_request(self):
+        row = {
+            "id": "pd-malformed-frontier",
+            "game_family": "matrix",
+            "opponent": "grim_trigger",
+            "legal_actions": ["C", "D"],
+            "payoffs": PAYOFFS,
+            "own_actions": ["C", "C"],
+            "opponent_actions": ["C", "C"],
+            "round_prompts": ["round one visible state", "round two visible history"],
+            "round_completions": [
+                "<think>blind one</think><action>C</action>",
+                "<think>blind two</think><action>C</action>",
+            ],
+            "frontier_completions": [
+                "<think>[Prior] p=0.5\n[Update] unchanged\n[EV] EV(D)=0.5 * 5 + 0.5 * 1\n[DECISION] D</think><action>D</action>",
+                # accepted round, but the [EV] slot has no probability-weighted
+                # arithmetic and there is no <action> block
+                "<think>[Prior] p=0.8\n[Update] unchanged\n[EV] D just looks better\n[DECISION] D</think>",
+            ],
+        }
+        with self.assertRaisesRegex(ValueError, "invalid frontier completion"):
+            build_pairs(row)
+        skipped: list = []
+        pairs = build_pairs(row, on_invalid="skip", skipped=skipped)
+        self.assertEqual(pairs, [])
+        self.assertEqual(len(skipped), 1)
+        self.assertEqual(skipped[0]["round"], 2)
+
     def test_rejects_multi_round_input_without_round_prompts(self):
         row = {
             "id": "missing-prompts",

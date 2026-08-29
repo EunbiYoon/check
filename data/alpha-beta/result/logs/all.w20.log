@@ -1,0 +1,14 @@
+[all][w20 GPU 2] [all.w20.jsonl] 44 improving flips -> 44 unique none contexts; paraphrasing 44
+[all][w20 GPU 2] WARNING: BNB_CUDA_VERSION=126 environment variable detected; loading libbitsandbytes_cuda126.so.
+[all][w20 GPU 2] This can be used to load a bitsandbytes version that is different from the PyTorch CUDA version.
+[all][w20 GPU 2] If this was unintended set the BNB_CUDA_VERSION variable to an empty string: export BNB_CUDA_VERSION=
+[all][w20 GPU 2] If you use the manual override make sure the right libcudart.so is in your LD_LIBRARY_PATH
+[all][w20 GPU 2] For example by adding the following to your .bashrc: export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_cuda_dir/lib64
+[all][w20 GPU 2] 
+[all][w20 GPU 2] Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+[all][w20 GPU 2] Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:32<01:36, 32.31s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:36<00:32, 16.04s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [01:00<00:19, 19.58s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:17<00:00, 18.60s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:17<00:00, 19.47s/it]
+[all][w20 GPU 2] /scratch/workspace/eunbiyoon_umass_edu-paper/eunbiyoon_umass_edu/.conda/envs/sal/lib/python3.11/site-packages/transformers/generation/configuration_utils.py:653: UserWarning: `do_sample` is set to `False`. However, `top_k` is set to `20` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_k`.
+[all][w20 GPU 2]   warnings.warn(
+[all][w20 GPU 2] [all.w20.jsonl] 25/44 contexts — 25 pairs, 0 dropped, 56s elapsed
+[all][w20 GPU 2] [all.w20.jsonl] 44/44 contexts — 44 pairs, 0 dropped, 103s elapsed
+[all][w20 GPU 2] wrote 44 verified round-level pairs to data/alpha-beta/result/shards/all.w20.jsonl

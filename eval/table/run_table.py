@@ -19,7 +19,19 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-import train.dpo_lora.gpu_env  # noqa: F401 — NVHPC libcublas path before bnb
+import importlib.util as _ilu  # train/dpo-lora is a hyphenated (non-importable) dir
+_DPO_LORA_DIR = ROOT / "train" / "dpo-lora"
+
+
+def _load_dpolora(module_name: str):
+    """Load a module from train/dpo-lora by file path (hyphen -> no plain import)."""
+    spec = _ilu.spec_from_file_location(f"_dpolora_{module_name}", _DPO_LORA_DIR / f"{module_name}.py")
+    module = _ilu.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_load_dpolora("gpu_env")  # set BNB_CUDA_VERSION / NVHPC libcublas path before bnb
 
 from eval.rollout.agents import HeuristicAgent, LoRALLMAgent, OllamaAgent
 from config import (
@@ -61,9 +73,12 @@ from eval.metric.metrics import EvalMetrics, evaluate_agent, metrics_to_dict
 from eval.table.paths import new_run_dir, resolve_run_dir, table_out_path, utc_stamp, write_latest_pointer
 from eval.rollout.progress import EvalLogger
 from eval.rollout.resume import parse_eval_log, parse_games_arg, resume_summary
-from train.dpo_lora.utils import attach_lora, build_lora_config, load_base_model
+_dpolora_utils = _load_dpolora("utils")
+attach_lora = _dpolora_utils.attach_lora
+build_lora_config = _dpolora_utils.build_lora_config
+load_base_model = _dpolora_utils.load_base_model
 
-TRAIN_MODULE = "train.dpo_lora"
+TRAIN_SCRIPT = str(_DPO_LORA_DIR / "variant.py")  # per-variant trainer
 
 
 def fmt(x: float) -> str:
@@ -393,7 +408,7 @@ def _train_all_variants(args) -> None:
             print(f"SKIP {v}: no pairs in {data}")
             continue
         cmd = [
-            sys.executable, "-m", TRAIN_MODULE,
+            sys.executable, TRAIN_SCRIPT,
             "--pairs", str(data),
             "--out", str(out),
             "--epochs", str(args.epochs),

@@ -12,7 +12,7 @@ on -- keeps only the pairs whose chosen-side *trajectory* is coupled.
 Every pair keeps the frontier's recorded completion as ``chosen`` (reasoning
 verbatim, action = frontier's own play) and swaps only the ``<action>`` payload
 for ``rejected``. Output rows are ``{prompt, chosen, rejected, ...}``, the schema
-consumed by ``train/cli.py --pairs``.
+consumed by ``train/dpo-lora/variant.py --pairs``.
 
 This pipeline is a reconstruction of a *falsified* baseline: the paper reports
 that coupling-filter DPO did not bind reasoning to action and that the filter
@@ -65,11 +65,43 @@ def _assemble(group: list[Candidate], *, coupling_filter: bool,
     }
 
 
+def _dedup_key(candidate: Candidate, mode: str) -> tuple:
+    if mode == "none":
+        return (id(candidate),)              # never merges
+    if mode == "full":
+        # one pair per exact (prompt, chosen text, rejected text)
+        return (candidate.prompt, candidate.chosen.completion, candidate.rejected_completion)
+    if mode == "context":
+        # one pair per (decision context, action contrast); the blind reasoning
+        # text varies episode-to-episode but the preference is the same signal
+        return (candidate.prompt, candidate.chosen.action_label, candidate.rejected_label)
+    if mode == "position":
+        # one pair per (game, round, action contrast) — the coarsest grouping
+        c = candidate.chosen
+        return (c.game, c.round_number, c.action_label, candidate.rejected_label)
+    raise ValueError("dedup must be 'none', 'full', 'context', or 'position'")
+
+
+def _representative(group: list[Candidate], coupled_by_trajectory: dict[str, bool]) -> Candidate:
+    """Best candidate to stand for a merged group: coupled chosen first, then
+    higher cumulative reward, then the longer (more explicit) reasoning."""
+    return max(
+        group,
+        key=lambda cand: (
+            coupled_by_trajectory.get(cand.chosen.trajectory_id, False),
+            cand.chosen.trajectory_return,
+            len(cand.chosen.reasoning),
+        ),
+    )
+
+
 def build_pairs(
     rows: Iterable[dict[str, Any]],
     *,
     coupling_filter: bool = False,
     strategies: Iterable[str] = ("S1", "S2", "S3", "S4"),
+    dedup: str = "full",
+    max_pairs: int | None = None,
 ) -> list[dict[str, Any]]:
     requested = [name.strip().upper() for name in strategies if name.strip()]
     unknown = [name for name in requested if name not in STRATEGIES]
@@ -82,24 +114,32 @@ def build_pairs(
     for name in requested:
         candidates.extend(STRATEGIES[name](pool))
 
-    # Merge identical (prompt, chosen, rejected) triples emitted by >1 strategy.
-    merged: dict[tuple[str, str, str], list[Candidate]] = {}
+    # Merge candidates that carry the same preference signal (the granularity is
+    # set by `dedup`); >1 strategy hitting the same key just adds a provenance tag.
+    merged: dict[tuple, list[Candidate]] = {}
     for candidate in candidates:
-        key = (candidate.prompt, candidate.chosen.completion, candidate.rejected_completion)
-        merged.setdefault(key, []).append(candidate)
+        merged.setdefault(_dedup_key(candidate, dedup), []).append(candidate)
 
     pairs: list[dict[str, Any]] = []
-    for group in merged.values():
-        chosen_trajectory = group[0].chosen.trajectory_id
-        if coupling_filter and not pool.coupled_by_trajectory.get(chosen_trajectory, False):
+    for group in sorted(merged.values(), key=lambda g: g[0].prompt):
+        keep = _representative(group, pool.coupled_by_trajectory)
+        if coupling_filter and not pool.coupled_by_trajectory.get(keep.chosen.trajectory_id, False):
             continue
+        # keep the representative first so its (prompt, chosen, rejected) is emitted
+        ordered = [keep] + [c for c in group if c is not keep]
         pairs.append(
             _assemble(
-                group,
+                ordered,
                 coupling_filter=coupling_filter,
                 coupled_by_trajectory=pool.coupled_by_trajectory,
             )
         )
+
+    if max_pairs is not None and len(pairs) > max_pairs:
+        import random
+
+        random.Random(0).shuffle(pairs)
+        pairs = pairs[:max_pairs]
     return pairs
 
 
@@ -125,6 +165,8 @@ def build_file(
     *,
     coupling_filter: bool = False,
     strategies: Iterable[str] = ("S1", "S2", "S3", "S4"),
+    dedup: str = "full",
+    max_pairs: int | None = None,
 ) -> int:
     rows: list[dict[str, Any]] = []
     with source.open(encoding="utf-8") as handle:
@@ -137,7 +179,10 @@ def build_file(
                 raise ValueError(f"{source}:{line_number}: {exc}") from exc
 
     pool = build_pool(rows)
-    pairs = build_pairs(rows, coupling_filter=coupling_filter, strategies=strategies)
+    pairs = build_pairs(
+        rows, coupling_filter=coupling_filter, strategies=strategies,
+        dedup=dedup, max_pairs=max_pairs,
+    )
     if not pairs:
         if coupling_filter and not any(pool.coupled_by_trajectory.values()):
             raise ValueError(
@@ -177,6 +222,21 @@ def main(argv: list[str] | None = None) -> None:
         default="S1,S2,S3,S4",
         help="comma-separated subset of S1,S2,S3,S4",
     )
+    parser.add_argument(
+        "--dedup",
+        choices=("none", "full", "context", "position"),
+        default="context",
+        help="merge granularity: 'full' = one pair per exact (prompt, chosen, "
+             "rejected) text; 'context' = one per (prompt, chosen action, "
+             "rejected action) [default]; 'position' = one per (game, round, "
+             "action contrast)",
+    )
+    parser.add_argument(
+        "--max-pairs",
+        type=int,
+        default=None,
+        help="cap the output at N pairs (deterministic seeded sample)",
+    )
     args = parser.parse_args(argv)
     try:
         count = build_file(
@@ -184,6 +244,8 @@ def main(argv: list[str] | None = None) -> None:
             args.output,
             coupling_filter=args.coupling_filter,
             strategies=args.strategies.split(","),
+            dedup=args.dedup,
+            max_pairs=args.max_pairs,
         )
     except (OSError, ValueError) as exc:
         parser.exit(1, f"error: {exc}\n")

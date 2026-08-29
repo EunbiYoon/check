@@ -1,28 +1,40 @@
-# data
+# SAL pipeline
 
-- blind rollout (1 node)   : `CUDA_VISIBLE_DEVICES=0,1,2 BLIND_VARIANTS=core,aux,all ./data/alpha-beta/blind_rollout.sh`
-- blind rollout (4×3 GPU)   : `./data/alpha-beta/blind-rollout/shard.sh <1|2|3|4>` on each node, then `./data/alpha-beta/blind-rollout/shard.sh merge`
-- A+β pairs                 : `python data/alpha-beta/noleakage-frontier/build_pairs.py --input data/alpha-beta/blind-rollout/result/a_beta_all.jsonl --output data/paper/a_beta_all.jsonl --provider teacher`
-- B pairs (filter_off)      : `python data/b-hypothesis/build_pairs.py --input data/alpha-beta/blind-rollout/result/filter_off.jsonl --output data/paper/filter_off.jsonl --no-coupling-filter`
-- B pairs (filter_on)       : `python data/b-hypothesis/build_pairs.py --input data/alpha-beta/blind-rollout/result/filter_off.jsonl --output data/paper/filter_on.jsonl --coupling-filter`
+모든 명령은 저장소 루트에서 실행한다. GPU가 3개 이상 보이는 단일 노드를
+기준으로 하며, 각 단계가 끝난 후 다음 단계를 실행한다.
 
-# train
+## 1. Blind rollout
 
-- all variants             : `TRAIN_VARIANTS=core,aux,all,rw TRAIN_NUM_GPUS=3 ./train/train.sh`
-- from prebuilt pairs       : `TRAIN_TRAJECTORY_DIR= DATA_DIR=data/paper TRAIN_VARIANTS=core,aux,all,rw ./train/train.sh`
-- add to a session          : `RUN_ID=<id> TRAIN_VARIANTS=filter_off,filter_on TRAIN_AUTO_MERGE=false ./train/train.sh`
-- one variant               : `python -m train.dpo_lora --trajectories data/alpha-beta/blind-rollout/result/a_beta_core.jsonl --out core --tensorboard`
-- one variant (pairs)       : `python -m train.dpo_lora --pairs data/paper/a_beta_core.jsonl --out core`
-- resume                    : `python -m train.dpo_lora --resume --out core`
-- merge aux+all             : `python train/specialist-merge/merge_adapters.py --checkpoint-dir runs/<RUN_ID>/lora`
+```bash
+./data/blind-rollout/shard.sh "$node"
+./data/blind-rollout/shard.sh merge
+```
+출력: `data/blind-rollout/result/a_beta_{core,aux,all,rw,fitler_off,filter_on}.jsonl`
 
-# eval
+## 2. A+beta pairs
 
-- full pipeline             : `./eval/eval.sh --run-id <RUN_ID>`
-- rollout                   : `./eval/rollout/rollout.sh --variants base,core,aux,all,rw,merge --episodes 12`
-- metrics                   : `./eval/metric/metrics.sh`
-- tables                    : `./eval/table/tables.sh`
-- paper tables 1–7          : `python -m eval.table.run_paper_tables --variants base,core,aux,all,rw,merge,filter_on,filter_off`
-- one table                 : `python -m eval.table.run_table --table 1`
-- one table (paper nums)    : `python -m eval.table.run_table --table 1 --compare-reference`
-# check
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2 A1_VARIANTS=core,aux,all,rw A1_INPUT_DIR=data/blind-rollout/result A1_OUTPUT_DIR=data/alpha-beta/result ./data/alpha-beta/algorithm1.sh
+```
+
+출력: `data/alpha-beta/result/a_beta_{core,aux,all,rw}.jsonl`
+
+## 3. Hypothesis B pairs
+
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2 HB_VARIANTS=filter_on,filter_off HB_RESULT_DIR=data/b-hypothesis/result ./data/b-hypothesis/hypothesis_b.sh
+```
+
+출력: `data/b-hypothesis/result/b_filter_{on,off}.jsonl`
+
+## 4. DPO training
+
+```bash
+RUN_ID=paper DATA_DIR=data/alpha-beta/result TRAIN_VARIANTS=core,aux,all,rw TRAIN_NUM_GPUS=3 TRAIN_AUTO_MERGE=false ./train/dpo-lora/train.sh
+```
+
+GPU 0은 `core` 완료 후 `rw`, GPU 1은 `aux`, GPU 2는 `all`을 학습한다.
+출력: `runs/paper/lora/{core,aux,all,rw}`
+
+Hypothesis B를 학습할 때는 같은 명령에서 `DATA_DIR=data/b-hypothesis/result`와
+`TRAIN_VARIANTS=filter_on,filter_off`만 사용한다.

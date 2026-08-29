@@ -24,7 +24,9 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-import train.dpo_lora.gpu_env  # noqa: F401
+import importlib.util as _ilu  # train/dpo-lora is a hyphenated (non-importable) dir
+_ge = _ilu.spec_from_file_location("_dpolora_gpu_env", ROOT / "train" / "dpo-lora" / "gpu_env.py")
+_ge.loader.exec_module(_ilu.module_from_spec(_ge))  # set BNB_CUDA_VERSION / LD paths before bnb
 
 import torch
 

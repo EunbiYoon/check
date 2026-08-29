@@ -75,6 +75,17 @@ class NoLeakageTest(unittest.TestCase):
         self.assertEqual(module.validate_pinned_action(valid, "D"), [])
         self.assertTrue(module.validate_pinned_action(valid, "C"))
 
+    def test_prose_decision_that_closes_on_the_pinned_action_is_accepted(self):
+        # The local 7B teacher writes [DECISION] as a sentence, not a lone token.
+        prose = (
+            "<think>[DECISION] The expected value of playing D (3) exceeds that "
+            "of C (1.5). Therefore, the decision is to play D</think>\n"
+            "<action>D</action>"
+        )
+        self.assertEqual(module.validate_pinned_action(prose, "D"), [])
+        # A sentence that resolves to the wrong action is still rejected.
+        self.assertTrue(module.validate_pinned_action(prose, "C"))
+
     def test_validates_posterior_ev_structure(self):
         valid = (
             "[Prior] Two opponent types each have probability 0.5.\n"
@@ -105,6 +116,31 @@ class NoLeakageTest(unittest.TestCase):
             module.validate_reasoning_structure(final_round, is_final_round=True), []
         )
         self.assertTrue(module.validate_reasoning_structure(final_round))
+
+    def test_terse_numeric_prior_expresses_uncertainty(self):
+        # The local 7B teacher under greedy decoding routinely writes the belief
+        # sections as a bare probability distribution with no uncertainty
+        # vocabulary. That is still a distribution over opponent actions and must
+        # not be rejected (mirrors the bare-value [EV] allowance).
+        terse = (
+            "[Prior] C 0.7, D 0.3\n"
+            "[Update] no change; the current-round move is not observable\n"
+            "[EV] EV(C) = 0.7 * 3 + 0.3 * 0 = 2.1; "
+            "EV(D) = 0.7 * 5 + 0.3 * 1 = 3.8\n"
+            "[DECISION] D"
+        )
+        self.assertEqual(module.validate_reasoning_structure(terse), [])
+        # A belief section with neither vocabulary nor a probability value is
+        # still rejected.
+        no_belief = (
+            "[Prior] C or D\n[Update] none\n"
+            "[EV] EV(C) = 0.5 * 3 + 0.5 * 0 = 1.5; "
+            "EV(D) = 0.5 * 5 + 0.5 * 1 = 3\n[DECISION] D"
+        )
+        self.assertIn(
+            "[Prior]/[Update] must express uncertainty over opponent types or actions",
+            module.validate_reasoning_structure(no_belief),
+        )
 
     def test_688_round_audit_and_manual_prior_round_review_record(self):
         # Seven of 688 rounds (1.017%) are heuristic candidates. Each candidate
