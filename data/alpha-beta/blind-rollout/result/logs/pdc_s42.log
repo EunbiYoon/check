@@ -43,3 +43,10 @@
 [pdc_s42]   running episode 8/10 (pd-classic / always_defect)
 [pdc_s42] progress 18/60 (30.0%) | elapsed 4:06 | ETA 9:34 | 0.07 trajectories/s
 [pdc_s42]   running episode 9/10 (pd-classic / always_defect)
+[pdc_s42] progress 19/60 (31.7%) | elapsed 4:19 | ETA 9:19 | 0.07 trajectories/s
+[pdc_s42]   running episode 10/10 (pd-classic / always_defect)
+[pdc_s42] progress 20/60 (33.3%) | elapsed 4:32 | ETA 9:03 | 0.07 trajectories/s
+[pdc_s42] starting pd-classic / tit_for_tat
+[pdc_s42]   running episode 1/10 (pd-classic / tit_for_tat)
+[pdc_s42] progress 21/60 (35.0%) | elapsed 4:45 | ETA 8:49 | 0.07 trajectories/s
+[pdc_s42]   running episode 2/10 (pd-classic / tit_for_tat)

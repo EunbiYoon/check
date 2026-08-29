@@ -54,3 +54,9 @@
 [pdt_s142]   running episode 3/10 (pd-tight / tit_for_tat)
 [pdt_s142] progress 23/60 (38.3%) | elapsed 5:21 | ETA 8:36 | 0.07 trajectories/s
 [pdt_s142]   running episode 4/10 (pd-tight / tit_for_tat)
+[pdt_s142] progress 24/60 (40.0%) | elapsed 5:35 | ETA 8:22 | 0.07 trajectories/s
+[pdt_s142]   running episode 5/10 (pd-tight / tit_for_tat)
+[pdt_s142] progress 25/60 (41.7%) | elapsed 5:51 | ETA 8:11 | 0.07 trajectories/s
+[pdt_s142]   running episode 6/10 (pd-tight / tit_for_tat)
+[pdt_s142] progress 26/60 (43.3%) | elapsed 6:06 | ETA 7:59 | 0.07 trajectories/s
+[pdt_s142]   running episode 7/10 (pd-tight / tit_for_tat)

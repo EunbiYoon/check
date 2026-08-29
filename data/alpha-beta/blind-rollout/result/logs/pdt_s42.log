@@ -41,3 +41,7 @@
 [pdt_s42]   running episode 7/10 (pd-tight / always_defect)
 [pdt_s42] progress 17/60 (28.3%) | elapsed 4:09 | ETA 10:30 | 0.07 trajectories/s
 [pdt_s42]   running episode 8/10 (pd-tight / always_defect)
+[pdt_s42] progress 18/60 (30.0%) | elapsed 4:22 | ETA 10:11 | 0.07 trajectories/s
+[pdt_s42]   running episode 9/10 (pd-tight / always_defect)
+[pdt_s42] progress 19/60 (31.7%) | elapsed 4:35 | ETA 9:54 | 0.07 trajectories/s
+[pdt_s42]   running episode 10/10 (pd-tight / always_defect)

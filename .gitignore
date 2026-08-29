@@ -5,12 +5,7 @@ __pycache__/
 .venv/
 venv/
 *.zip
-
-# Unified run outputs (history/ after the rename, runs/ before it)
-/history/*
-!/history/.gitkeep
-!/history/__init__.py
-!/history/paths.py
+history/
 
 /runs/*
 !/runs/.gitkeep
