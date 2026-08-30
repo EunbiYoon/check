@@ -49,7 +49,7 @@ Output: `runs/paper/lora/{core,aux,all,rw,filter_off,filter_on}`
 
 # Artifact
 ## Tensorboard 
-![TensorBoard](train/artifact-release/image.png)
+![TensorBoard](image.png)
 
 ## Deploy Hugging Face - Best eval checkpoint step
 https://huggingface.co/Bianca2/trace
