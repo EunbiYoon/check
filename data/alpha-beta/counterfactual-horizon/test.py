@@ -3,13 +3,11 @@ from __future__ import annotations
 import unittest
 
 from build_pairs import build_pairs
-from counterfactual_horizon import (
-    fixed_continuation_return,
-    horizon_aware_return,
-    is_reconstructible,
-    opponent_action,
-    recorded_return,
+from fixed_continuation import (
+    fixed_continuation_return, opponent_action, recorded_return,
 )
+from counterfactual_utils import is_reconstructible
+from optimal_continuation import horizon_aware_return
 
 
 LEGAL = ["C", "D"]

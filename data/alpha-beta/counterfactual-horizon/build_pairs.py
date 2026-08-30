@@ -10,13 +10,9 @@ import re
 from pathlib import Path
 from typing import Any
 
-from counterfactual_horizon import (
-    fixed_continuation_return,
-    horizon_aware_return,
-    is_reconstructible,
-    recorded_return,
-    validate_recorded_trajectory,
-)
+from fixed_continuation import fixed_continuation_return
+from utils import is_reconstructible, recorded_return, validate_recorded_trajectory
+from optimal_continuation import horizon_aware_return
 
 ACTION_RE = re.compile(r"(<action>)(.*?)(</action>)", re.DOTALL)
 

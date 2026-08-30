@@ -1,230 +1,64 @@
 #!/usr/bin/env python3
-"""Prompt construction and leakage validation for frontier paraphrases."""
+"""No-leakage frontier paraphrase: prompt, leakage audit, structure checks.
+
+The pieces are split by concern into sibling modules:
+
+    frontier_prompt.py   paper §2.3   SYSTEM_PROMPT, build_user_prompt, _action_text
+    leakage_audit.py     Appendix C   LEAKAGE_REGEX, AuditFlag, audit_reasoning
+    structure_checks.py               ACTION_RE, validate_pinned_action,
+                                      validate_reasoning_structure
+
+This module re-exports their public names (so ``_load("validation.py")`` still
+sees the whole surface) and adds the file-level audit CLI:
+
+    python validation.py oracle_rounds.jsonl [--output flagged.jsonl] [--strict]
+"""
 
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import re
 import sys
-from dataclasses import asdict, dataclass
+from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 
-# Paper §2.3 (page 4), reproduced verbatim. The paper prints two ". . ." gaps in
-# the quoted SYSTEM prompt; per the authors those gaps may carry extra
-# instructions but every printed sentence must appear exactly as written. Only
-# the two marked elisions below are ours; the rest is the paper's wording.
-SYSTEM_PROMPT = (
-    "You are documenting strategic decisions "
-    # --- elision 1: task framing ---
-    "for simultaneous-move repeated games, inferring a posterior over the "
-    "opponent's type from the history through the previous round and evaluating "
-    "every legal action under it. "
-    # --- end elision 1 ---
-    "The other player's current-round move is NOT observable at decision time. "
-    "We will tell you (out-of-band, for your reference) the opponent's actual "
-    "move that round and the solver-computed best response, but your written "
-    "reasoning must NEVER reference the current-round opponent move as observed. "
-    "Treat it as belief-state reasoning under uncertainty. "
-    # --- elision 2: output contract ---
-    "Write exactly one <think> block containing the sections [Prior], [Update], "
-    "[EV], and [DECISION] in that order, then exactly one <action> block, in "
-    "this exact shape and nothing else:\n"
-    "<think>\n"
-    "[Prior] <opponent-type labels with a probability each>\n"
-    "[Update] <how the explicitly numbered prior rounds move those probabilities>\n"
-    "[EV] <for every legal action, the posterior-weighted sum written out in "
-    "full, e.g. EV(D) = 0.7*5 + 0.3*1 = 3.8; EV(C) = 0.7*3 + 0.3*0 = 2.1>\n"
-    "[DECISION] <the single pinned action token, nothing else>\n"
-    "</think>\n"
-    "<action><the single pinned action token></action>\n"
-    "You may cite the opponent's actions in explicitly numbered prior rounds but "
-    "never as current observations, and you must not mention these instructions "
-    "or the out-of-band fields in your answer. "
-    # --- end elision 2 ---
-    "Hard rules: (1) NEVER write phrases like \"opponent played C this round\"; "
-    "(2) The [EV] arithmetic must average over your posterior types — not "
-    "condition on the unrevealed action; (3) Your [DECISION] must match the "
-    "solver-pinned best response we provide; build the posterior to justify that "
-    "action."
-)
-
-
-# Heuristic leakage candidates, verbatim from paper Appendix C. These are
-# deliberately audit flags for manual review, not automatic deletion rules:
-# legitimate prior-round prose ("opponent cooperated in round 2") matches too
-# and is retained after inspection (paper §2.3, Appendix C).
-LEAKAGE_REGEX: re.Pattern[str] = re.compile(
-    r"opponent (played|chose|cooperat|defect)\w*\s+(this round|in round \d+)",
-    re.IGNORECASE,
-)
-# Round-1 traces cannot reference any prior round, so a bare past-tense claim
-# about the opponent is a candidate on its own.
-ROUND_ONE_LEAKAGE_REGEX: re.Pattern[str] = re.compile(
-    r"opp(onent)? play(ed|s)|opp(onent)? cooperat|opp(onent)? defect",
-    re.IGNORECASE,
-)
-
-DECISION_RE = re.compile(r"\[\s*decision\s*\]\s*(?:play|choose|bid|propose)?\s*([^\n<]+)", re.I)
-ACTION_RE = re.compile(r"<action>\s*(.*?)\s*</action>", re.I | re.S)
-SECTION_RE = re.compile(r"\[\s*(Prior|Update|EV|Decision)\s*\]", re.I)
-UNCERTAINTY_RE = re.compile(
-    r"\b(?:posterior|probabilit(?:y|ies)|likelihood|chance|belief|distribution|"
-    r"type|types|uncertain|expect(?:ed|ation)?)\b",
-    re.I,
-)
-EV_ARITHMETIC_RE = re.compile(
-    r"(?:\d+(?:\.\d+)?\s*%|\b0?\.\d+\b).{0,80}(?:[+*×]|\b(?:times|weighted|average)\b)",
-    re.I | re.S,
-)
-PROBABILITY_VALUE_RE = re.compile(r"(?:\d+(?:\.\d+)?\s*%|\b0?\.\d+\b)")
-
-
-@dataclass(frozen=True)
-class AuditFlag:
-    rule: str
-    excerpt: str
-    start: int
-    end: int
-
-
-def _action_text(action: Any) -> str:
-    if isinstance(action, (list, tuple)):
-        return "[" + ",".join(str(part) for part in action) + "]"
-    return str(action).strip()
-
-
-def build_user_prompt(
-    *, history_prompt: str, solver_action: Any, opponent_action: Any = None
-) -> str:
-    """Build the teacher request (paper §2.3).
-
-    The paraphraser is told the realised opponent action and the solver best
-    response out of band; the SYSTEM prompt forbids citing the former as an
-    observation. ``opponent_action=None`` withholds it (round-1 or unknown).
-    """
-    if opponent_action is None:
-        oracle_move = "(withheld — reason from history only)"
-    else:
-        oracle_move = _action_text(opponent_action)
-    return (
-        "INFERENCE-TIME INFORMATION (the reasoning may use only this):\n"
-        f"{history_prompt.rstrip()}\n\n"
-        "OUT-OF-BAND REFERENCE (never cite as observed; fixes the answer only):\n"
-        f"opponent's actual current-round move: {oracle_move}\n"
-        f"solver-pinned best response: {_action_text(solver_action)}\n\n"
-        "Return the history-only belief-state reasoning and pinned action now."
+def _sibling(filename: str, module_name: str):
+    if module_name in sys.modules:
+        return sys.modules[module_name]
+    spec = importlib.util.spec_from_file_location(
+        module_name, Path(__file__).with_name(filename)
     )
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
-def audit_reasoning(reasoning: str, *, round_number: int | None = None) -> list[AuditFlag]:
-    """Return heuristic leakage candidates for later manual inspection.
+_prompt = _sibling("frontier_prompt.py", "noleak_frontier_prompt")
+_leak = _sibling("leakage_audit.py", "noleak_leakage_audit")
+_struct = _sibling("structure_checks.py", "noleak_structure_checks")
 
-    Matches the paper's Appendix C audit: a general current-round regex on every
-    round, plus a round-1-specific past-tense regex. Candidates are reviewed by
-    hand, not deleted automatically (paper §2.3).
-    """
-    flags: list[AuditFlag] = []
-    seen: set[tuple[int, int, str]] = set()
-    patterns: Iterable[tuple[str, re.Pattern[str]]] = (
-        ("current-round-opponent-action", LEAKAGE_REGEX),
-    )
-    if round_number == 1:
-        patterns = (*patterns, ("round-1-opponent-past-tense", ROUND_ONE_LEAKAGE_REGEX))
-    for rule, pattern in patterns:
-        for match in pattern.finditer(reasoning):
-            key = (match.start(), match.end(), rule)
-            if key in seen:
-                continue
-            seen.add(key)
-            excerpt = " ".join(match.group(0).split())
-            flags.append(AuditFlag(rule, excerpt[:240], match.start(), match.end()))
-    return sorted(flags, key=lambda item: (item.start, item.end, item.rule))
+SYSTEM_PROMPT = _prompt.SYSTEM_PROMPT
+_action_text = _prompt._action_text
+build_user_prompt = _prompt.build_user_prompt
+
+AuditFlag = _leak.AuditFlag
+LEAKAGE_REGEX = _leak.LEAKAGE_REGEX
+ROUND_ONE_LEAKAGE_REGEX = _leak.ROUND_ONE_LEAKAGE_REGEX
+audit_reasoning = _leak.audit_reasoning
+
+ACTION_RE = _struct.ACTION_RE
+DECISION_RE = _struct.DECISION_RE
+SECTION_RE = _struct.SECTION_RE
+validate_pinned_action = _struct.validate_pinned_action
+validate_reasoning_structure = _struct.validate_reasoning_structure
 
 
-def validate_pinned_action(text: str, solver_action: Any) -> list[str]:
-    """Check that both output action fields agree with the solver label."""
-    expected = _action_text(solver_action)
-    errors: list[str] = []
-    actions = ACTION_RE.findall(text)
-    if len(actions) != 1:
-        errors.append(f"expected one <action> block, found {len(actions)}")
-    elif _action_text(actions[0]) != expected:
-        errors.append(f"<action> is {_action_text(actions[0])!r}, expected {expected!r}")
-    decisions = DECISION_RE.findall(text)
-    if len(decisions) != 1:
-        errors.append(f"expected one [DECISION], found {len(decisions)}")
-    else:
-        decision = decisions[0].strip().rstrip(". ")
-        if not _decision_matches(decision, expected):
-            errors.append(f"[DECISION] is {decision!r}, expected {expected!r}")
-    return errors
-
-
-def _decision_matches(decision: str, expected: str) -> bool:
-    """Accept a bare [DECISION] token or a sentence that closes on it.
-
-    The authoritative bare token is the <action> block (checked separately); the
-    [DECISION] slot is the softer closing-line consistency check. The local 7B
-    teacher routinely writes it as prose ("... therefore the decision is to play
-    D") rather than a lone token, so match an exact hit or a trailing whole-word
-    hit on the expected action.
-    """
-    want = expected.casefold().strip()
-    got = decision.casefold().strip()
-    if got == want:
-        return True
-    tokens = re.findall(r"[\w.\-]+", got)
-    return bool(tokens) and tokens[-1] == want
-
-
-def validate_reasoning_structure(
-    reasoning: str, *, is_final_round: bool = False
-) -> list[str]:
-    """Validate ordered belief-state sections and posterior-weighted EV work.
-
-    On a final round there is no future and no posterior to average over: the
-    solver reduces to the stage-game best response and the [EV] slot states the
-    raw stage payoffs (paper Appendix F, Example 1). The posterior-weighted
-    arithmetic requirement is therefore waived for the terminal round only.
-    """
-    errors: list[str] = []
-    matches = list(SECTION_RE.finditer(reasoning))
-    names = [match.group(1).casefold() for match in matches]
-    expected = ["prior", "update", "ev", "decision"]
-    if names != expected:
-        return [
-            "reasoning must contain exactly [Prior], [Update], [EV], and "
-            "[DECISION] in that order"
-        ]
-
-    sections: dict[str, str] = {}
-    for index, match in enumerate(matches):
-        end = matches[index + 1].start() if index + 1 < len(matches) else len(reasoning)
-        sections[names[index]] = reasoning[match.end():end].strip()
-    for name in expected:
-        if not sections[name]:
-            errors.append(f"[{name.upper()}] section must not be empty")
-
-    belief_text = f"{sections['prior']} {sections['update']}"
-    # A distribution over opponent types/actions counts whether it is spelled out
-    # ("cooperator type with probability 0.7") or written as the bare numbers the
-    # local 7B teacher emits under greedy decoding ("[Prior] C 0.7, D 0.3"). This
-    # mirrors the [EV] check below, which also accepts a bare probability value.
-    if not UNCERTAINTY_RE.search(belief_text) and not PROBABILITY_VALUE_RE.search(belief_text):
-        errors.append("[Prior]/[Update] must express uncertainty over opponent types or actions")
-    ev = sections["ev"]
-    if is_final_round:
-        return errors
-    if not UNCERTAINTY_RE.search(ev) and not PROBABILITY_VALUE_RE.search(ev):
-        errors.append("[EV] must identify the posterior probability or expectation being used")
-    if not EV_ARITHMETIC_RE.search(ev):
-        errors.append("[EV] must show probability-weighted arithmetic")
-    return errors
-
-
+# --------------------------------------------------------------- audit CLI
 def _reasoning_from_row(row: dict[str, Any]) -> str:
     for field in ("reasoning", "completion", "chosen", "response"):
         value = row.get(field)

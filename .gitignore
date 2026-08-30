@@ -27,6 +27,7 @@ lora_3b/
 eval/latest.json
 lora/latest.json
 eval/archive/
+train/artifact-release/
 
 # Old flat adapter dirs under lora/
 lora/all/

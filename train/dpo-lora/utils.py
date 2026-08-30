@@ -110,6 +110,7 @@ def load_base_model(
         model.generation_config.do_sample = False
         model.generation_config.temperature = None
         model.generation_config.top_p = None
+        model.generation_config.top_k = None
     return model, tokenizer
 
 

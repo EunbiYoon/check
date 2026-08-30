@@ -35,10 +35,14 @@ def _load(path: Path, name: str):
 
 
 solver = _load(_HERE / "solver-pinned" / "best_action.py", "pair_solver")
-counterfactual = _load(
-    _HERE / "counterfactual-horizon" / "counterfactual_horizon.py",
-    "pair_counterfactual",
-)
+# Load the split counterfactual modules under their real names so their bare
+# sibling imports (optimal_continuation -> `from fixed_continuation import ...`)
+# resolve from sys.modules -- WITHOUT putting counterfactual-horizon/ on sys.path
+# (it has a generic utils.py that would shadow train/dpo-lora/utils.py etc.).
+_COUNTERFACTUAL_DIR = _HERE / "counterfactual-horizon"
+counterfactual_utils = _load(_COUNTERFACTUAL_DIR / "utils.py", "counterfactual_utils")
+fixed_continuation = _load(_COUNTERFACTUAL_DIR / "fixed_continuation.py", "fixed_continuation")
+optimal_continuation = _load(_COUNTERFACTUAL_DIR / "optimal_continuation.py", "optimal_continuation")
 no_leak = _load(Path(__file__).with_name("validation.py"), "pair_no_leak")
 
 
@@ -109,15 +113,24 @@ def _existing_paraphraser(row: dict[str, Any]) -> Callable[..., str]:
 
 
 def teacher_paraphraser(
-    STUDENT_MODEL: str, *, max_new_tokens: int = 1024
+    STUDENT_MODEL: str, *, max_new_tokens: int = 1024, use_4bit: bool = False
 ) -> Callable[..., str]:
-    """Load the local 7B teacher once and return a deterministic generator."""
+    """Load the local 7B teacher once and return a deterministic generator.
+
+    ``use_4bit`` defaults to False: the teacher is inference-only, a bf16 7B fits
+    comfortably, and bf16 greedy decoding is several times faster than a 4-bit
+    load -- which also drags in bitsandbytes/libcudart, the exact dependency the
+    blind-rollout stage disables for the same reason. Pass ``use_4bit=True`` only
+    on a GPU too small for bf16.
+    """
     import torch
 
-    import config
     load_base_model = _dpolora("utils").load_base_model
 
-    model, tokenizer = load_base_model(STUDENT_MODEL=STUDENT_MODEL, use_4bit=config.USE_4BIT)
+    model, tokenizer = load_base_model(
+        STUDENT_MODEL=STUDENT_MODEL, use_4bit=use_4bit,
+        torch_dtype=None if use_4bit else "bfloat16",
+    )
     model.eval()
 
     def paraphrase(
@@ -167,16 +180,16 @@ def _accepted_rounds(
     repeated = len(own_actions) > 1
     baseline: float | None = None
     payoffs = None
-    if repeated and not counterfactual.is_reconstructible(row.get("opponent", "")):
+    if repeated and not counterfactual_utils.is_reconstructible(row.get("opponent", "")):
         # §2.4: the horizon filter needs a reconstructible opponent. Without it
         # we cannot certify repeated-game flips, so emit nothing for this row.
         return []
 
     if family in {"matrix", "matrix-game"}:
         payoffs = solver.decode_matrix_payoffs(row["payoffs"])
-        baseline = counterfactual.recorded_return(own_actions, opponent_actions, payoffs)
+        baseline = counterfactual_utils.recorded_return(own_actions, opponent_actions, payoffs)
         if repeated:
-            counterfactual.validate_recorded_trajectory(
+            counterfactual_utils.validate_recorded_trajectory(
                 own_actions,
                 opponent_actions,
                 row["opponent"],
@@ -193,9 +206,9 @@ def _accepted_rounds(
             if payoffs is None:
                 raise ValueError("multi-round horizon filtering supports matrix games only")
             return_fn = (
-                counterfactual.horizon_aware_return
+                optimal_continuation.horizon_aware_return
                 if counterfactual_mode == "horizon-aware"
-                else counterfactual.fixed_continuation_return
+                else fixed_continuation.fixed_continuation_return
             )
             candidate_return = return_fn(
                 own_actions,
@@ -662,6 +675,80 @@ def dedup_pairs_file(
     return len(kept)
 
 
+def compose_stratified_mix(
+    source: Path,
+    destination: Path,
+    *,
+    total_count: int,
+    special_count: int,
+    special_families: Iterable[str],
+    base: Path | None = None,
+) -> int:
+    """Build a deterministic mix with an exact special-family allocation.
+
+    When ``base`` is supplied, its rows form the non-special portion and
+    ``source`` supplies special rows (AUX = CORE + auction/negotiation).
+    Otherwise both portions are selected from ``source`` (ALL). Duplicate
+    prompt/rejected pairs are removed before seeded sampling.
+    """
+    families = set(special_families)
+
+    def load(path: Path) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        with path.open(encoding="utf-8") as handle:
+            for line_number, line in enumerate(handle, 1):
+                if not line.strip():
+                    continue
+                try:
+                    rows.append(json.loads(line))
+                except json.JSONDecodeError as exc:
+                    raise ValueError(f"{path}:{line_number}: {exc}") from exc
+        return rows
+
+    def full_dedup(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        unique: dict[tuple[Any, Any], dict[str, Any]] = {}
+        for row in rows:
+            key = (row.get("prompt"), row.get("rejected"))
+            unique.setdefault(key, row)
+        return list(unique.values())
+
+    def is_special(row: dict[str, Any]) -> bool:
+        provenance = row.get("provenance") or {}
+        return provenance.get("game_family") in families or provenance.get("game") in families
+
+    source_rows = full_dedup(load(source))
+    special = [row for row in source_rows if is_special(row)]
+    regular_needed = total_count - special_count
+    if regular_needed < 0:
+        raise ValueError("special_count cannot exceed total_count")
+    if base is None:
+        regular = [row for row in source_rows if not is_special(row)]
+    else:
+        regular = [row for row in full_dedup(load(base)) if not is_special(row)]
+
+    if len(special) < special_count or len(regular) < regular_needed:
+        raise ValueError(
+            f"insufficient rows for stratified mix: need {regular_needed} regular + "
+            f"{special_count} special, found {len(regular)} regular + {len(special)} special"
+        )
+
+    rng = random.Random(0)
+    rng.shuffle(regular)
+    rng.shuffle(special)
+    mixed = regular[:regular_needed] + special[:special_count]
+    rng.shuffle(mixed)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("w", encoding="utf-8") as handle:
+        for row in mixed:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+    print(
+        f"stratified mix: {regular_needed} regular + {special_count} special "
+        f"= {len(mixed)} -> {destination}",
+        file=sys.stderr,
+    )
+    return len(mixed)
+
+
 RW_UPSAMPLE_FAMILIES = ("auction", "bargaining", "negotiation", "divide-dollar")
 
 
@@ -854,6 +941,19 @@ def main() -> None:
         "it (used by algorithm1.sh merge, where the pool was shard-split)",
     )
     parser.add_argument(
+        "--stratify-only",
+        action="store_true",
+        help="compose an exact regular/special-family pair mix",
+    )
+    parser.add_argument("--base", type=Path, default=None, help="optional regular-row source")
+    parser.add_argument("--total-pairs", type=int, default=None)
+    parser.add_argument("--special-pairs", type=int, default=None)
+    parser.add_argument(
+        "--special-families",
+        default=",".join(RW_UPSAMPLE_FAMILIES),
+        help="comma-separated special game families",
+    )
+    parser.add_argument(
         "--upsample-only",
         action="store_true",
         help="--input is a built (deduped) pair JSONL: derive the paper RW mix "
@@ -869,6 +969,22 @@ def main() -> None:
         help="comma-separated game_family values to upsample for the RW mix",
     )
     args = parser.parse_args()
+    if args.stratify_only:
+        if args.total_pairs is None or args.special_pairs is None:
+            parser.error("--stratify-only requires --total-pairs and --special-pairs")
+        try:
+            count = compose_stratified_mix(
+                args.input,
+                args.output,
+                total_count=args.total_pairs,
+                special_count=args.special_pairs,
+                special_families=args.special_families.split(","),
+                base=args.base,
+            )
+        except (OSError, ValueError) as exc:
+            parser.exit(1, f"error: {exc}\n")
+        print(f"wrote {count} stratified pairs to {args.output}")
+        return
     if args.upsample_only:
         try:
             _, count = upsample_pairs_file(

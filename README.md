@@ -1,4 +1,4 @@
-# SAL pipeline
+# Training pipeline
 
 Run all commands from the repository root. These instructions assume a single
 node with at least three visible GPUs. Complete each stage before starting the next.
@@ -6,15 +6,24 @@ node with at least three visible GPUs. Complete each stage before starting the n
 ## 1. Blind rollout
 
 ```bash
-./data/blind-rollout/shard.sh "$node"
-./data/blind-rollout/shard.sh merge
+# shard with 13 nodes, each node has 3 gpu
+BLIND_ONESHOT_EPISODES=120 ./data/blind-rollout/shard13.sh 13
+./data/blind-rollout/shard13.sh merge
 ```
 Output: `data/blind-rollout/result/a_beta_{core,aux,all,rw,filter_off,filter_on}.jsonl`
 
 ## 2. A+beta pairs
 
+`algorithm1.py` transcribes paper Algorithm 1: per episode, for each round pin
+the action to the solver best response, keep the flip only if the counterfactual
+horizon filter certifies it, paraphrase leak-free reasoning, emit the DPO pair.
+`algorithm1.sh` is the launcher: conda/CUDA setup + the 13-node x 3-GPU sharding
+(one resumable worker per GPU, 39 total), like `shard13.sh`.
+
 ```bash
-CUDA_VISIBLE_DEVICES=0,1,2 A1_VARIANTS=core,aux,all,rw A1_INPUT_DIR=data/blind-rollout/result A1_OUTPUT_DIR=data/alpha-beta/result ./data/alpha-beta/algorithm1.sh
+# shard with 13 nodes, each node has 3 gpu
+./data/alpha-beta/algorithm1.sh 1  # ... node 2 .. 13
+./data/alpha-beta/algorithm1.sh merge
 ```
 
 Output: `data/alpha-beta/result/a_beta_{core,aux,all,rw}.jsonl`
@@ -31,10 +40,16 @@ Output: `data/b-hypothesis/result/b_filter_{on,off}.jsonl`
 
 ```bash
 RUN_ID=paper DATA_DIR=data/alpha-beta/result TRAIN_VARIANTS=core,aux,all,rw TRAIN_NUM_GPUS=3 TRAIN_AUTO_MERGE=false ./train/dpo-lora/train.sh
+RUN_ID=paper DATA_DIR=data/b-hypothesis/result TRAIN_VARIANTS=filter_on,filter_off TRAIN_NUM_GPUS=3 TRAIN_AUTO_MERGE=false ./train/dpo-lora/train.sh
 ```
 
-GPU 0 trains `core` followed by `rw`, GPU 1 trains `aux`, and GPU 2 trains `all`.
-Output: `runs/paper/lora/{core,aux,all,rw}`
+* GPU 0 trains `core` followed by `rw`, GPU 1 trains `aux`, and GPU 2 trains `all`.
+Output: `runs/paper/lora/{core,aux,all,rw,filter_off,filter_on}`
 
-To train Hypothesis B, use the same command with
-`DATA_DIR=data/b-hypothesis/result` and `TRAIN_VARIANTS=filter_on,filter_off`.
+# Result
+## Tensorboard 
+
+
+
+
+## Deploy Hugging Face - Best eval checkpoint step

@@ -64,7 +64,9 @@ class LoRALLMAgent:
         self.reasoning_format = reasoning_format
 
     def _generate(self, obs: dict[str, Any]) -> str:
-        text = _format_llm_prompt(self.tokenizer, obs["prompt"], self.reasoning_format)
+        n_legal = len(obs.get("legal_actions") or [])
+        text = _format_llm_prompt(self.tokenizer, obs["prompt"], self.reasoning_format,
+                                  n_legal=n_legal)
         inputs = self.tokenizer(text, return_tensors="pt").to(self.model.device)
         pad_id = self.tokenizer.pad_token_id or self.tokenizer.eos_token_id
         gen_cfg = GenerationConfig(
@@ -180,25 +182,49 @@ _CONCISE_CONTRACT = (
 # metric parses (eval/metric/coupling.py). A+beta ignores the blind reasoning
 # format (it is the rejected side; the chosen side is re-written by the teacher);
 # Hypothesis B's coupling filter needs the [EV] slot to exist.
-_SLOTS_CONTRACT = (
+_SLOTS_CONTRACT_HEAD = (
     "\n\nThe opponent's current-round action is not observable. Reason only from "
     "the game description and completed-round history above — never state the "
     "opponent's move this round as observed.\n"
     "Write one <think> block with exactly these four sections, in order:\n"
     "[Prior] your belief about the opponent's action this round, as rough probabilities.\n"
     "[Update] how the completed-round history (if any) shifts that belief.\n"
+)
+_SLOTS_EV_ALL = (
     "[EV] for EACH legal action, the probability-weighted expected value as "
     "arithmetic, e.g. EV(C) = 0.7*3 + 0.3*0 = 2.1\n"
+)
+# Above a few dozen legal actions (negotiation ~125, auction ~201) the model
+# spends its whole budget enumerating EV(...) for every one and then closes
+# </think> WITHOUT a [Decision] line — ~20% of negotiation rounds came back
+# malformed this way. A 3-5 action shortlist keeps [EV] parseable and leaves
+# room for [Decision]. Small games (<= threshold) keep the exhaustive form the
+# coupling filter prefers.
+_SLOTS_EV_SHORTLIST = (
+    "[EV] name the 3-5 most promising legal actions and, for each, the "
+    "probability-weighted expected value as arithmetic, e.g. "
+    "EV([0,4,2]) = 0.5*8 + 0.5*10 = 9\n"
+)
+_SLOTS_CONTRACT_TAIL = (
     "[Decision] the legal action with the highest EV.\n"
     "Keep each section to one short sentence. Then one <action> block with that action.\n"
     "Respond exactly as <think>[Prior] ... [Update] ... [EV] ... [Decision] ...</think>"
     "<action>one legal action</action>."
 )
+_EV_SHORTLIST_THRESHOLD = 12
 
 
-def _format_llm_prompt(tokenizer, prompt: str, reasoning_format: str = "concise") -> str:
+def _slots_contract(n_legal: int | None) -> str:
+    ev = _SLOTS_EV_SHORTLIST if (n_legal or 0) > _EV_SHORTLIST_THRESHOLD else _SLOTS_EV_ALL
+    return _SLOTS_CONTRACT_HEAD + ev + _SLOTS_CONTRACT_TAIL
+
+
+def _format_llm_prompt(tokenizer, prompt: str, reasoning_format: str = "concise",
+                       *, n_legal: int | None = None) -> str:
     """Use chat template when present (Instruct); else raw prompt (pretrained base)."""
-    output_contract = _SLOTS_CONTRACT if reasoning_format == "slots" else _CONCISE_CONTRACT
+    output_contract = (
+        _slots_contract(n_legal) if reasoning_format == "slots" else _CONCISE_CONTRACT
+    )
     messages = [{"role": "user", "content": prompt + output_contract}]
     if getattr(tokenizer, "chat_template", None):
         return tokenizer.apply_chat_template(

@@ -5,26 +5,33 @@
 #   after all 13 finish:     ./data/blind-rollout/shard13.sh merge
 #
 # Why this exists: shard.sh's unit of work is a (game, seed) pair, so it tops
-# out at ~13 GPUs and one worker (the light bundle) is a 1.5x straggler. Here
-# each of the four repeated games (pd-classic, pd-tight, pd-high-temptation,
-# stag-hunt) x {seed 42, 142, 242} is split THREE ways over the (opponent,
-# episode) work list via offline_trajectory.py --num-shards/--shard-index:
+# out at ~13 GPUs and one worker (the light bundle) is a 1.5x straggler.
 #
-#     workers  0..35  -> heavy: 12 (game,seed) combos x 3 episode-shards
-#     workers 36..38  -> the five one-shot games at seed 42, one file each
+# The work splits into two pools (rounds = generation calls):
+#     heavy    12 (game,seed) combos of the repeated games, 6*12*10 = 720 each
+#     one-shot the 5 one-shot games at seed 42, 32 opp-slots * ONESHOT_E rounds
+# At ONESHOT_E=120 that is 8640 heavy + 3840 one-shot = 12480 rounds; an even
+# 39-way split is 320 rounds/worker. An earlier version split the heavy pool 3
+# ways (36 workers) and left only 3 workers for the whole one-shot pool -- those
+# three did ~1280 calls each while the heavy workers did ~240, so node 13 was a
+# 5x straggler. Now:
 #
-# 39 workers, ~240 generation calls each (was ~1100 on the shard.sh straggler)
-# => roughly 4-5x lower wall-clock. Per-unit seeds come from (opponent_index,
-# episode_index) only, so the 3-way split is bit-identical to an unsplit run.
+#     workers  0..23  -> heavy: 12 (game,seed) combos x 2 episode-shards (~360)
+#     workers 24..38  -> one-shot bundle, 15-way (opponent,episode) split  (~256)
+#
+# Per-unit seeds come from (opponent_index, episode_index) only, so any
+# --num-shards value is bit-identical to an unsplit run.
 #
 # Per-shard rollouts write into data/blind-rollout/result/ as
-# "<tag>.p<shard>.jsonl" (+ result/logs/<tag>.p<shard>.log). `merge` reuses
-# shard.sh's merge (globs "*_s<seed>*.jsonl", assembles a_beta_*/filter_* by the
-# "game" field in each row), so run either script's `merge` once at the end. The
-# merge deletes the per-shard files afterwards (all inside a_beta_all.jsonl); set
+# "<tag>.p<shard>.jsonl" (+ result/logs/<tag>.p<shard>.log): "<HEAVY_TAG>_s<seed>"
+# for the heavy pool, "os_s42" for the one-shot pool. `merge` reuses shard.sh's
+# merge (globs "*_s<seed>*.jsonl", assembles a_beta_*/filter_* by the "game"
+# field in each row), so run either script's `merge` once at the end. The merge
+# deletes the per-shard files afterwards (all inside a_beta_all.jsonl); set
 # BLIND_KEEP_SHARDS=1 to keep them.
 #
-# Overridable: BLIND_EPISODES_PER_COMBINATION (default 12), BLIND_MODEL,
+# Overridable: BLIND_EPISODES_PER_COMBINATION (repeated games),
+# BLIND_ONESHOT_EPISODES (one-shot games), BLIND_MODEL,
 # BLIND_MAX_NEW_TOKENS, BLIND_TEMPERATURE, BLIND_REASONING_FORMAT.
 set -euo pipefail
 
@@ -41,7 +48,9 @@ RFMT="${BLIND_REASONING_FORMAT:-slots}"
 
 NODES=13
 GPUS_PER_NODE=3
-HEAVY_SPLIT=3                                 # episode-shards per (game,seed)
+HEAVY_SPLIT=2                                 # episode-shards per (game,seed) -> 12*2 = 24 workers
+ONESHOT_SPLIT=15                              # (opponent,episode)-shards for the one-shot bundle
+HEAVY_WORKERS=$(( 12 * HEAVY_SPLIT ))         # 24; one-shot takes workers 24..38
 
 # ---------------------------------------------------------------- merge
 if [[ "$MODE" == "merge" ]]; then
@@ -68,30 +77,31 @@ conda activate sal
 if [[ -f .env ]]; then set -a; source .env; set +a; fi
 
 E="${BLIND_EPISODES_PER_COMBINATION:-12}"
+ONESHOT_E="${BLIND_ONESHOT_EPISODES:-$E}"
 MODEL="${BLIND_MODEL:-${TEACHER_MODEL:-Qwen/Qwen2.5-7B-Instruct}}"
 _DEF_TOK=384; [[ "$RFMT" == slots ]] && _DEF_TOK=512
 MAX_NEW_TOKENS="${BLIND_MAX_NEW_TOKENS:-$_DEF_TOK}"
 TEMPERATURE="${BLIND_TEMPERATURE:-0.7}"
 mkdir -p "$D/logs"
 
-# 12 heavy (game,seed) combos, in worker order 0..11 -> workers 0..35 after the
-# 3-way episode split.
+# 12 heavy (game,seed) combos, in worker order 0..11 -> workers 0..23 after the
+# 2-way episode split.
 HEAVY_GAMES=(pd-classic pd-tight pd-high-temptation stag-hunt)
 HEAVY_SEEDS=(42 142 242)
 HEAVY_TAGS=(pdc pdt pdh stag)
 
-# 3 one-shot workers (36..38): game list, seed 42, run whole (no episode split).
-ONESHOT_GAMES=("bos,matching-pennies" "ipd-stage,negotiation" "auction")
-ONESHOT_TAGS=(os_bosmp os_ipdneg os_auction)
+# One-shot pool: all five games as a single bundle at seed 42, split 15 ways over
+# the (opponent,episode) work list across workers 24..38.
+ONESHOT_GAMES="bos,matching-pennies,ipd-stage,negotiation,auction"
 
-# run_one <games> <seed> <num-shards> <shard-index> <tag> <gpu>
+# run_one <games> <seed> <num-shards> <shard-index> <tag> <gpu> <episodes>
 run_one() {
-  local games="$1" seed="$2" nshards="$3" sidx="$4" tag="$5" gpu="$6"
+  local games="$1" seed="$2" nshards="$3" sidx="$4" tag="$5" gpu="$6" episodes="$7"
   local out="${D}/${tag}.p${sidx}.jsonl" log="${D}/logs/${tag}.p${sidx}.log"
   echo "  GPU ${gpu} -> ${games}  seed ${seed}  shard ${sidx}/${nshards}  -> ${out}"
   CUDA_VISIBLE_DEVICES="$gpu" PYTHONUNBUFFERED=1 python "$OT" \
     --model "$MODEL" --games "$games" --seed "$seed" \
-    --episodes-per-combination "$E" --max-new-tokens "$MAX_NEW_TOKENS" \
+    --episodes-per-combination "$episodes" --max-new-tokens "$MAX_NEW_TOKENS" \
     --do-sample --temperature "$TEMPERATURE" \
     --reasoning-format "$RFMT" \
     --num-shards "$nshards" --shard-index "$sidx" \
@@ -102,14 +112,14 @@ run_one() {
 # dispatch one global worker id (0..38) onto local GPU $gpu
 dispatch() {
   local w="$1" gpu="$2"
-  if (( w < 36 )); then
+  if (( w < HEAVY_WORKERS )); then
     local combo=$(( w / HEAVY_SPLIT )) sidx=$(( w % HEAVY_SPLIT ))
     local gi=$(( combo / 3 )) si=$(( combo % 3 ))
     run_one "${HEAVY_GAMES[$gi]}" "${HEAVY_SEEDS[$si]}" "$HEAVY_SPLIT" "$sidx" \
-            "${HEAVY_TAGS[$gi]}_s${HEAVY_SEEDS[$si]}" "$gpu"
-  elif (( w < 39 )); then
-    local k=$(( w - 36 ))
-    run_one "${ONESHOT_GAMES[$k]}" 42 1 0 "${ONESHOT_TAGS[$k]}_s42" "$gpu"
+            "${HEAVY_TAGS[$gi]}_s${HEAVY_SEEDS[$si]}" "$gpu" "$E"
+  elif (( w < HEAVY_WORKERS + ONESHOT_SPLIT )); then
+    local sidx=$(( w - HEAVY_WORKERS ))
+    run_one "$ONESHOT_GAMES" 42 "$ONESHOT_SPLIT" "$sidx" "os_s42" "$gpu" "$ONESHOT_E"
   else
     echo "  GPU ${gpu}: no work for worker ${w}" ; : > "${D}/idle.w${w}.jsonl"
   fi
@@ -119,7 +129,7 @@ nvidia-smi -L
 python -c "import torch; assert torch.cuda.is_available(), 'torch.cuda is unavailable'"
 
 node="$MODE"
-echo "Blind rollout | node ${node}/${NODES} | E=${E} | model=${MODEL} | format=${RFMT} | world=$((NODES*GPUS_PER_NODE))"
+echo "Blind rollout | node ${node}/${NODES} | repeated-E=${E} | one-shot-E=${ONESHOT_E} | model=${MODEL} | format=${RFMT} | world=$((NODES*GPUS_PER_NODE))"
 PIDS=()
 for g in $(seq 0 $((GPUS_PER_NODE - 1))); do
   w=$(( (node - 1) * GPUS_PER_NODE + g ))

@@ -35,13 +35,13 @@ class TrainingPairPipelineTests(unittest.TestCase):
             "own_actions": ["C", "C"],
             "opponent_actions": ["C", "C"],
         }
-        with patch.object(module.counterfactual, "horizon_aware_return", return_value=7) as eq3, \
-             patch.object(module.counterfactual, "fixed_continuation_return", return_value=6) as eq2:
+        with patch.object(module.optimal_continuation, "horizon_aware_return", return_value=7) as eq3, \
+             patch.object(module.fixed_continuation, "fixed_continuation_return", return_value=6) as eq2:
             module._accepted_rounds(row, counterfactual_mode="horizon-aware")
             self.assertTrue(eq3.called)
             self.assertFalse(eq2.called)
-        with patch.object(module.counterfactual, "horizon_aware_return", return_value=7) as eq3, \
-             patch.object(module.counterfactual, "fixed_continuation_return", return_value=6) as eq2:
+        with patch.object(module.optimal_continuation, "horizon_aware_return", return_value=7) as eq3, \
+             patch.object(module.fixed_continuation, "fixed_continuation_return", return_value=6) as eq2:
             module._accepted_rounds(row, counterfactual_mode="fixed")
             self.assertFalse(eq3.called)
             self.assertTrue(eq2.called)
