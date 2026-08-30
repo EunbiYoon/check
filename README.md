@@ -52,4 +52,4 @@ Output: `runs/paper/lora/{core,aux,all,rw,filter_off,filter_on}`
 ![TensorBoard](image.png)
 
 ## Hugging Face - Best eval checkpoint step
-https://huggingface.co/Bianca2/trace
+https://huggingface.co/Bianca2/trace/tree/main
