@@ -46,10 +46,10 @@ RUN_ID=paper DATA_DIR=data/b-hypothesis/result TRAIN_VARIANTS=filter_on,filter_o
 * GPU 0 trains `core` followed by `rw`, GPU 1 trains `aux`, and GPU 2 trains `all`.
 Output: `runs/paper/lora/{core,aux,all,rw,filter_off,filter_on}`
 
-# Result
+
+# Artifact
 ## Tensorboard 
-
-
-
+![alt text](train/artifact-release/image.png)
 
 ## Deploy Hugging Face - Best eval checkpoint step
+https://huggingface.co/Bianca2/trace
